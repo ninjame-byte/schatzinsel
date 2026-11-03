@@ -1,0 +1,4291 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>🏴‍☠️ Schatzinsel</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #0e0904;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+      }
+      #app {
+        width: 100%;
+        max-width: 760px;
+        height: 100vh;
+        max-height: 950px;
+        position: relative;
+        overflow: hidden;
+        background: #0e0904;
+        transition: background 0.8s ease;
+      }
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        padding: 18px;
+      }
+      .screen.active {
+        display: flex;
+      }
+      .center {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* ===== START ===== */
+      .start-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 180, 60, 0.14), transparent 45%),
+          radial-gradient(circle at 80% 75%, rgba(80, 160, 255, 0.1), transparent 45%),
+          linear-gradient(160deg, #2a1a0a 0%, #120a04 100%);
+      }
+      .start-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+      }
+      .logo {
+        font-size: clamp(54px, 14vw, 96px);
+        filter: drop-shadow(0 10px 30px rgba(255, 180, 50, 0.5));
+        animation: float 3s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      h1 {
+        font-size: clamp(28px, 6.5vw, 46px);
+        font-weight: 800;
+        background: linear-gradient(180deg, #ffe066, #ffb347, #ff8c00);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 6px 0 4px;
+        letter-spacing: 1px;
+      }
+      .sub {
+        font-size: clamp(13px, 3vw, 17px);
+        color: #c9b48a;
+        margin-bottom: 22px;
+      }
+
+      .crew-row {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .crew-btn {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        background: none;
+        padding: 0;
+        transition: transform 0.18s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .crew-btn:active {
+        transform: scale(0.94);
+      }
+      .crew-fig {
+        width: clamp(120px, 30vw, 170px);
+        height: auto;
+        filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.55));
+        transition: filter 0.2s;
+      }
+      .crew-btn:hover .crew-fig {
+        filter: drop-shadow(0 12px 34px rgba(255, 190, 70, 0.65));
+      }
+      .crew-label {
+        margin-top: 6px;
+        font-size: clamp(14px, 3.2vw, 18px);
+        font-weight: 800;
+        color: #ffe9b0;
+        letter-spacing: 0.5px;
+      }
+      .hint {
+        font-size: 12px;
+        color: #8a7448;
+        margin-top: 20px;
+      }
+
+      /* ===== KARTE ===== */
+      #screen-map {
+        padding: 0;
+      }
+
+      .map-header {
+        position: absolute;
+        top: 26px;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        pointer-events: none;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        pointer-events: auto;
+        background: rgba(30, 20, 8, 0.82);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 215, 130, 0.35);
+        border-radius: 30px;
+        padding: 7px 14px;
+        font-size: clamp(12px, 2.8vw, 15px);
+        font-weight: 700;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        color: #ffe9b0;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        white-space: nowrap;
+      }
+      .pill.icon-only {
+        padding: 7px 11px;
+        cursor: pointer;
+        font-size: 17px;
+      }
+      .pill.reise-pill {
+        background: rgba(126, 217, 87, 0.3);
+        border-color: rgba(126, 217, 87, 0.55);
+        color: #d4ffb0;
+      }
+
+      .map-wrap {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 88px 8px 12px;
+      }
+
+      .pergament {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-width: 640px;
+        max-height: 860px;
+        filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.75));
+        transition: filter 0.8s ease;
+      }
+      .pergament-inner {
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        background:
+          radial-gradient(ellipse at 30% 20%, rgba(170, 125, 60, 0.22), transparent 55%),
+          radial-gradient(ellipse at 75% 80%, rgba(130, 90, 40, 0.24), transparent 55%),
+          repeating-linear-gradient(7deg, rgba(104, 67, 28, 0.025) 0px, rgba(104, 67, 28, 0.025) 1px, transparent 1px, transparent 5px),
+          radial-gradient(circle at 50% 50%, #f5e4bd 0%, #e9d2a1 48%, #d4b477 100%);
+        overflow: hidden;
+        transition: background 0.8s ease;
+        clip-path: polygon(
+          0% 3%,
+          2% 1%,
+          6% 2%,
+          10% 0.5%,
+          15% 2%,
+          21% 0.8%,
+          28% 2.2%,
+          35% 0.5%,
+          43% 2%,
+          51% 0.6%,
+          59% 2.2%,
+          67% 0.8%,
+          75% 2%,
+          82% 0.5%,
+          89% 2%,
+          95% 0.8%,
+          99% 3%,
+          98% 8%,
+          100% 14%,
+          98.5% 21%,
+          100% 28%,
+          98.8% 36%,
+          100% 44%,
+          98.5% 52%,
+          100% 60%,
+          98.8% 68%,
+          100% 76%,
+          98.5% 84%,
+          99.5% 91%,
+          97% 97%,
+          91% 98.5%,
+          84% 97%,
+          76% 99%,
+          68% 97.5%,
+          60% 99%,
+          52% 97.2%,
+          44% 99%,
+          36% 97.5%,
+          28% 99%,
+          20% 97.2%,
+          12% 98.8%,
+          6% 97%,
+          1.5% 94%,
+          2.5% 88%,
+          0.5% 81%,
+          2% 74%,
+          0% 66%,
+          1.8% 58%,
+          0% 50%,
+          2% 42%,
+          0% 34%,
+          1.8% 26%,
+          0% 18%,
+          2% 10%
+        );
+      }
+      .pergament-inner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(60, 30, 5, 0.55), transparent 18%),
+          radial-gradient(ellipse at 50% 100%, rgba(60, 30, 5, 0.55), transparent 18%),
+          radial-gradient(ellipse at 0% 50%, rgba(60, 30, 5, 0.5), transparent 16%),
+          radial-gradient(ellipse at 100% 50%, rgba(60, 30, 5, 0.5), transparent 16%),
+          radial-gradient(ellipse at 12% 12%, rgba(90, 50, 15, 0.35), transparent 22%),
+          radial-gradient(ellipse at 88% 88%, rgba(90, 50, 15, 0.35), transparent 22%);
+        pointer-events: none;
+        z-index: 3;
+      }
+      .pergament-inner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        box-shadow: inset 0 0 70px rgba(70, 35, 5, 0.65);
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .map-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      #truhenLayer {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+      }
+      .truhe-node {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        width: clamp(36px, 8vw, 50px);
+        height: clamp(36px, 8vw, 50px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        cursor: pointer;
+        user-select: none;
+        background: radial-gradient(circle, #fff4d0 0%, #e8c67a 100%);
+        border: 2px solid #8a6030;
+        box-shadow:
+          0 5px 14px rgba(60, 30, 5, 0.55),
+          inset 0 -2px 6px rgba(120, 70, 20, 0.3);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .truhe-node.locked {
+        opacity: 0.5;
+        cursor: default;
+        filter: grayscale(0.45);
+      }
+      .truhe-node.done {
+        background: radial-gradient(circle, #fff3a0 0%, #ffd24a 100%);
+        border-color: #b8860b;
+        box-shadow:
+          0 0 18px rgba(255, 200, 80, 0.75),
+          0 5px 14px rgba(60, 30, 5, 0.55);
+      }
+      .truhe-node.current {
+        background: radial-gradient(circle, #fff8d0 0%, #ffb347 100%);
+        border-color: #ff8c00;
+        animation: glow 1.6s ease-in-out infinite;
+      }
+      @keyframes glow {
+        0%,
+        100% {
+          box-shadow:
+            0 0 14px rgba(255, 170, 50, 0.6),
+            0 5px 14px rgba(60, 30, 5, 0.55);
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          box-shadow:
+            0 0 30px rgba(255, 190, 70, 1),
+            0 5px 14px rgba(60, 30, 5, 0.55);
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+      }
+      .truhe-node:not(.locked):active {
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+      .station-num {
+        position: absolute;
+        bottom: -6px;
+        right: -6px;
+        background: #5a3a18;
+        color: #ffe9b0;
+        font-weight: 800;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        border: 2px solid #f0dcb0;
+      }
+
+      /* ===== TRUHE GROSS ===== */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 50;
+        background: rgba(8, 4, 1, 0.9);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+      }
+      .overlay.active {
+        display: flex;
+      }
+      .truhe-big {
+        font-size: clamp(120px, 32vw, 200px);
+        cursor: pointer;
+        user-select: none;
+        filter: drop-shadow(0 20px 50px rgba(255, 180, 50, 0.5));
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: bounce 1.4s ease-in-out infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-14px) scale(1.04);
+        }
+      }
+      .truhe-big:active {
+        transform: scale(0.92);
+      }
+      .truhe-big.opening {
+        animation: openPop 0.5s ease-out forwards;
+      }
+      @keyframes openPop {
+        0% {
+          transform: scale(1);
+        }
+        60% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(0);
+          opacity: 0;
+        }
+      }
+      .overlay-text {
+        font-size: clamp(16px, 3.5vw, 20px);
+        color: #e8c67a;
+        margin-top: 10px;
+        font-weight: 600;
+      }
+
+      /* ===== AUFGABE ===== */
+      #screen-task {
+        justify-content: flex-start;
+        background: linear-gradient(180deg, #2a1a0a, #120a04);
+      }
+      .task-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .task-card {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(160deg, #f2ddb0 0%, #cfab66 100%);
+        border: 6px solid #8a6030;
+        border-radius: 24px;
+        padding: 30px 22px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 20px 50px rgba(0, 0, 0, 0.65),
+          inset 0 0 60px rgba(120, 80, 30, 0.25);
+        color: #3a2408;
+      }
+      .task-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.15), transparent 60%);
+        pointer-events: none;
+      }
+      .task-icon {
+        font-size: clamp(56px, 14vw, 84px);
+        margin-bottom: 16px;
+        position: relative;
+      }
+      .task-text {
+        font-size: clamp(21px, 5vw, 30px);
+        font-weight: 700;
+        line-height: 1.35;
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .btn {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        padding: 16px 30px;
+        border-radius: 18px;
+        font-size: clamp(16px, 3.6vw, 20px);
+        font-weight: 700;
+        transition: transform 0.12s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .btn-listen {
+        background: rgba(70, 120, 180, 0.25);
+        border: 1px solid rgba(70, 120, 180, 0.6);
+        color: #3a6a9a;
+      }
+      .btn-done {
+        background: linear-gradient(180deg, #7ed957, #4caf50);
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4);
+      }
+
+      .task-timer {
+        color: #ffe9b0;
+        text-align: center;
+        font-weight: 800;
+        font-size: 16px;
+        margin: 8px 0 2px;
+      }
+      .task-timer.urgent { color: #ff8b6b; }
+      .task-help {
+        display: none;
+        margin: 12px 0 0;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.72);
+        color: #3a2408;
+        font-size: 16px;
+        line-height: 1.4;
+        font-weight: 650;
+      }
+      .task-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 6px;
+      }
+      .btn-small {
+        font-family: inherit;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 14px;
+        font-size: clamp(13px, 3vw, 16px);
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: transform 0.12s;
+        background: linear-gradient(180deg, #a87a48 0%, #7a5228 100%);
+        color: #ffe9b0;
+        border: 2px solid #5a3a18;
+        box-shadow:
+          0 4px 0 #4a2a10,
+          0 6px 14px rgba(0, 0, 0, 0.4);
+      }
+      .btn-small:active {
+        transform: translateY(3px);
+        box-shadow:
+          0 1px 0 #4a2a10,
+          0 3px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      /* ===== REWARD ===== */
+      #screen-reward {
+        background: linear-gradient(180deg, #2a1a0a, #120a04);
+      }
+      .reward-star {
+        font-size: clamp(90px, 24vw, 150px);
+        animation: starSpin 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes starSpin {
+        0% {
+          transform: scale(0) rotate(-180deg);
+        }
+        100% {
+          transform: scale(1) rotate(0);
+        }
+      }
+      .reward-title {
+        font-size: clamp(24px, 5.5vw, 34px);
+        font-weight: 800;
+        color: #ffd966;
+        margin: 10px 0;
+      }
+      .reward-sub {
+        font-size: clamp(14px, 3.2vw, 18px);
+        color: #c9b48a;
+        margin-bottom: 26px;
+      }
+
+      /* ===== FINALE ===== */
+      #screen-finale {
+        background: linear-gradient(180deg, #2a1a0a, #120a04);
+      }
+      .finale-gem {
+        font-size: clamp(90px, 24vw, 150px);
+        animation: float 2.5s ease-in-out infinite;
+        filter: drop-shadow(0 0 40px rgba(120, 220, 255, 0.6));
+      }
+      .finale-title {
+        font-size: clamp(32px, 8vw, 52px);
+        font-weight: 900;
+        background: linear-gradient(180deg, #ffe066, #ffb347);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 8px 0;
+      }
+
+      .confetti {
+        position: absolute;
+        font-size: 24px;
+        pointer-events: none;
+        z-index: 60;
+        animation: fall 1.6s ease-in forwards;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(-40px) rotate(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(600deg);
+          opacity: 0;
+        }
+      }
+
+      /* ===== HAND-GEMALTE PIRATEN-ADVENTURE-OPTIK ===== */
+      body { background: radial-gradient(ellipse at 50% 15%, #244a55 0%, #10252f 54%, #07141d 100%); }
+      #app { background: linear-gradient(160deg, #193844, #091923 76%); }
+      .start-bg {
+        background:
+          radial-gradient(ellipse at 50% 78%, rgba(255,183,79,.24), transparent 42%),
+          radial-gradient(ellipse at 15% 20%, rgba(43,139,139,.35), transparent 38%),
+          radial-gradient(ellipse at 85% 35%, rgba(72,104,151,.3), transparent 35%),
+          linear-gradient(160deg,#163d4a 0%,#102a38 52%,#071923 100%);
+      }
+      h1 {
+        background: linear-gradient(180deg,#fff1b6 0%,#ffc76b 45%,#d8753e 100%);
+        -webkit-background-clip:text; background-clip:text;
+        filter: drop-shadow(0 3px 0 rgba(49,28,18,.7));
+        letter-spacing:1.5px;
+      }
+      .sub { color:#d6e0d0; text-shadow:0 2px 4px #071923; }
+      .pill {
+        background:linear-gradient(145deg,rgba(22,51,57,.95),rgba(8,27,34,.94));
+        border:1px solid rgba(255,205,126,.62); color:#fff0c8;
+        box-shadow:0 5px 0 rgba(5,18,23,.38),0 9px 22px rgba(0,0,0,.3);
+      }
+      .pill.reise-pill { background:linear-gradient(145deg,#286b65,#16433f); color:#efffd9; }
+      .map-wrap { padding:82px 10px 14px; }
+      .pergament {
+        max-width:650px; max-height:880px;
+        filter:drop-shadow(0 20px 25px rgba(0,0,0,.45)) drop-shadow(0 0 1px #e9c98d);
+      }
+      .pergament-inner {
+        border-radius:15px;
+        background:
+          radial-gradient(ellipse at 23% 24%,rgba(255,249,208,.7),transparent 31%),
+          radial-gradient(ellipse at 78% 70%,rgba(130,72,32,.26),transparent 33%),
+          radial-gradient(ellipse at 48% 52%,#e9d19b 0%,#d8b879 56%,#a97842 100%);
+        box-shadow:inset 0 0 0 3px rgba(106,63,32,.45),inset 0 0 30px rgba(72,37,16,.4);
+      }
+      .pergament-inner::before {
+        background:
+          radial-gradient(ellipse at 50% 0%,rgba(68,37,17,.64),transparent 20%),
+          radial-gradient(ellipse at 50% 100%,rgba(68,37,17,.64),transparent 20%),
+          radial-gradient(ellipse at 0% 50%,rgba(68,37,17,.58),transparent 18%),
+          radial-gradient(ellipse at 100% 50%,rgba(68,37,17,.58),transparent 18%),
+          repeating-linear-gradient(7deg,transparent 0 8px,rgba(93,61,28,.035) 9px 10px),
+          radial-gradient(ellipse at 14% 16%,rgba(102,58,25,.24),transparent 20%),
+          radial-gradient(ellipse at 87% 84%,rgba(102,58,25,.28),transparent 23%);
+      }
+
+      /* Klassische, handgemalte Piraten-Abenteueroptik */
+      body { background: radial-gradient(ellipse at 50% 18%, #42616a 0%, #182e35 52%, #09151a 100%); }
+      .start-bg {
+        background: radial-gradient(ellipse at 50% 20%, rgba(224,159,76,.24), transparent 42%),
+                    radial-gradient(ellipse at 15% 78%, rgba(48,112,108,.30), transparent 38%),
+                    linear-gradient(155deg,#263d3d 0%,#14282b 52%,#091619 100%);
+      }
+      .logo { filter: drop-shadow(0 5px 0 rgba(49,25,12,.85)) drop-shadow(0 10px 18px rgba(242,173,75,.3)); }
+      .pergament { filter: drop-shadow(0 18px 25px rgba(0,0,0,.58)) drop-shadow(0 0 4px rgba(26,12,4,.85)); }
+      .pergament-inner {
+        border-radius: 4px;
+        background:
+          radial-gradient(ellipse at 50% 48%, rgba(255,238,184,.38), transparent 57%),
+          radial-gradient(ellipse at 12% 12%, rgba(45,20,7,.78), transparent 19%),
+          radial-gradient(ellipse at 91% 13%, rgba(57,24,7,.72), transparent 17%),
+          radial-gradient(ellipse at 8% 88%, rgba(47,20,6,.84), transparent 20%),
+          radial-gradient(ellipse at 92% 91%, rgba(43,17,5,.82), transparent 20%),
+          radial-gradient(ellipse at 50% 50%, #eed9a7 0%, #d9b979 65%, #95602f 100%);
+        box-shadow: inset 0 0 0 2px rgba(70,34,12,.65), inset 0 0 24px 7px rgba(58,25,7,.48), inset 0 0 55px rgba(30,12,3,.42);
+      }
+      .pergament-inner::before {
+        background:
+          radial-gradient(ellipse at 0% 0%, rgba(38,14,3,.92), transparent 22%),
+          radial-gradient(ellipse at 100% 0%, rgba(48,18,3,.88), transparent 20%),
+          radial-gradient(ellipse at 0% 100%, rgba(36,13,3,.94), transparent 23%),
+          radial-gradient(ellipse at 100% 100%, rgba(42,15,3,.92), transparent 22%),
+          radial-gradient(ellipse at 50% 0%, rgba(67,30,8,.45), transparent 15%),
+          radial-gradient(ellipse at 50% 100%, rgba(67,30,8,.45), transparent 15%),
+          repeating-linear-gradient(7deg, transparent 0 7px, rgba(80,48,20,.055) 8px 9px);
+      }
+      .pergament-inner::after { box-shadow: inset 0 0 34px 7px rgba(45,17,4,.55), inset 0 0 4px 2px rgba(43,17,4,.8); }
+      .truhe-node { filter: drop-shadow(0 3px 2px rgba(35,17,6,.5)); }
+      .truhe-node.current { animation: chestGlow 2.1s ease-in-out infinite; }
+      .pill { background: rgba(28,37,34,.91); border-color: rgba(228,190,115,.55); color:#ffe9b8; }
+      .btn, button { -webkit-tap-highlight-color: transparent; }
+
+      .map-svg { filter: drop-shadow(0 1px 0 rgba(255,241,198,.22)); }
+      #truhenLayer { z-index:4; }
+      .truhe-node {
+        width:clamp(43px,10vw,57px); height:clamp(42px,9.5vw,54px);
+        border:0; border-radius:12px; background:transparent; overflow:visible;
+        box-shadow:none; filter:drop-shadow(0 4px 2px rgba(61,35,16,.38));
+        transition:transform .2s,filter .2s;
+      }
+      .truhe-node:not(.locked):active { transform:translate(-50%,-50%) scale(.9); }
+      .truhe-node.current { background:transparent; border:0; animation:chestGlow 1.8s ease-in-out infinite; }
+      .truhe-node.done { background:transparent; border:0; filter:drop-shadow(0 0 7px rgba(255,226,115,.75)); }
+      .truhe-node.locked { opacity:.67; filter:grayscale(.35) drop-shadow(0 3px 2px rgba(61,35,16,.3)); }
+      @keyframes chestGlow { 0%,100% { transform:translate(-50%,-50%) scale(1); filter:drop-shadow(0 3px 3px rgba(70,36,11,.45)); } 50% { transform:translate(-50%,-53%) scale(1.08); filter:drop-shadow(0 0 9px rgba(255,225,115,.95)); } }
+      .chest-art { position:relative; display:block; width:100%; height:100%; }
+      .chest-lid {
+        position:absolute; left:10%; top:10%; width:80%; height:35%; display:block;
+        border:2px solid #4b2c19; border-radius:9px 9px 3px 3px;
+        background:linear-gradient(180deg,#d89a4d 0%,#9d592b 45%,#6e3b21 100%);
+        box-shadow:inset 0 3px 2px rgba(255,218,143,.55),inset 0 -3px 2px rgba(51,24,10,.55);
+      }
+      .chest-body {
+        position:absolute; left:8%; top:39%; width:84%; height:48%; display:block;
+        border:2px solid #4b2c19; border-radius:3px 3px 8px 8px;
+        background:linear-gradient(90deg,#704020 0%,#bd7939 18%,#8e4c27 47%,#c1823d 76%,#63371e 100%);
+        box-shadow:inset 0 4px 3px rgba(255,209,121,.42),inset 0 -5px 3px rgba(42,20,10,.45);
+      }
+      .chest-band { position:absolute; z-index:2; left:42%; top:11%; width:16%; height:76%; display:block;
+        background:linear-gradient(90deg,#9e722c,#f4d16c 35%,#c28c31 70%,#70451e); border-left:1px solid #67451f; border-right:1px solid #67451f; }
+      .chest-lock { position:absolute; z-index:3; left:39%; top:39%; width:22%; height:25%; display:flex; align-items:center; justify-content:center;
+        font:900 clamp(8px,2vw,12px)/1 system-ui; color:#fff0a6; text-shadow:0 1px 2px #42230f; }
+      .station-num { bottom:-4px; right:-4px; width:19px; height:19px; border:2px solid #f5dca0; background:linear-gradient(#285c5c,#153b43); color:#fff2c5; box-shadow:0 2px 4px #5a351b; }
+      .truhe-big { width:min(58vw,260px); height:min(50vw,220px); font-size:0; position:relative; animation:bounce 1.4s ease-in-out infinite; }
+      .chest-art-big { width:100%; height:100%; filter:drop-shadow(0 18px 13px rgba(0,0,0,.42)); }
+      .chest-art-big .chest-lid { border-width:5px; border-radius:24px 24px 8px 8px; }
+      .chest-art-big .chest-body { border-width:5px; border-radius:5px 5px 20px 20px; }
+      .chest-art-big .chest-band { border-left-width:3px; border-right-width:3px; }
+      .chest-art-big .chest-lock { font-size:clamp(22px,7vw,38px); color:#ffe58b; }
+      .chest-theme-mark { position:absolute; right:-5px; top:-8px; font-size:clamp(28px,8vw,44px); filter:drop-shadow(0 3px 2px #40240f); }
+      .overlay { background:radial-gradient(ellipse at 50% 35%,rgba(24,76,79,.96),rgba(4,18,25,.98) 72%); }
+      .overlay-text { color:#fff0c5; text-shadow:0 2px 5px #061820; }
+      .btn,.btn-small { border-radius:14px; box-shadow:0 4px 0 rgba(4,20,25,.45),0 8px 18px rgba(0,0,0,.18); }
+      .task-card { border:1px solid rgba(242,204,129,.65); box-shadow:0 12px 30px rgba(0,0,0,.22); }
+      @media (max-height:700px) {
+        .map-wrap { padding-top:74px; padding-bottom:7px; }
+        .truhe-node { width:clamp(37px,7.5vw,46px); height:clamp(37px,7.5vw,46px); }
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ===== START ===== -->
+      <div class="screen active center" id="screen-start">
+        <div class="start-bg"></div>
+        <div class="start-content">
+          <div class="logo">🏴‍☠️</div>
+          <h1>Schatzinsel</h1>
+          <p class="sub">Wähle deinen Begleiter</p>
+
+          <div class="crew-row">
+            <button class="crew-btn" onclick="startGame('klein')" aria-label="Kleiner Affe">
+              <svg class="crew-fig" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kleiner Affe">
+                <ellipse cx="100" cy="180" rx="46" ry="34" fill="#8a5a2b"/>
+                <ellipse cx="100" cy="182" rx="34" ry="26" fill="#c98a4a"/>
+                <ellipse cx="78" cy="212" rx="14" ry="9" fill="#6a3f1a"/><ellipse cx="122" cy="212" rx="14" ry="9" fill="#6a3f1a"/>
+                <path d="M68 168 Q100 182 132 168 L128 198 Q100 206 72 198 Z" fill="#4f9b62"/>
+                <path d="M100 168 L100 198" stroke="#347248" stroke-width="2"/>
+                <ellipse cx="58" cy="172" rx="12" ry="20" fill="#8a5a2b" transform="rotate(-20 58 172)"/>
+                <ellipse cx="142" cy="172" rx="12" ry="20" fill="#8a5a2b" transform="rotate(20 142 172)"/>
+                <circle cx="100" cy="120" r="46" fill="#a06a35"/>
+                <circle cx="56" cy="118" r="16" fill="#8a5a2b"/><circle cx="144" cy="118" r="16" fill="#8a5a2b"/>
+                <circle cx="56" cy="118" r="9" fill="#d9a06a"/><circle cx="144" cy="118" r="9" fill="#d9a06a"/>
+                <ellipse cx="100" cy="132" rx="26" ry="20" fill="#e8bf8a"/>
+                <circle cx="86" cy="112" r="5.5" fill="#2a1a0a"/><circle cx="114" cy="112" r="5.5" fill="#2a1a0a"/>
+                <circle cx="87.5" cy="110.5" r="1.7" fill="#fff"/><circle cx="115.5" cy="110.5" r="1.7" fill="#fff"/>
+                <ellipse cx="100" cy="126" rx="4" ry="3" fill="#6a3f1a"/>
+                <path d="M88 137 Q100 147 112 137" stroke="#5a3010" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <path d="M67 88 Q75 69 89 78 Q99 61 110 77 Q126 67 135 88 Q120 82 109 88 Q91 81 67 88Z" fill="#70401f"/>
+                <path d="M77 91 Q88 82 99 89 M105 88 Q116 82 126 91" stroke="#8b552c" stroke-width="3" fill="none" stroke-linecap="round"/>
+              </svg>
+              <span class="crew-label">Kleiner Affe</span>
+            </button>
+
+            <button class="crew-btn" onclick="startGame('gross')" aria-label="Großer Pirat">
+              <svg class="crew-fig" viewBox="0 0 220 240" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="110" cy="196" rx="52" ry="38" fill="#8a5a2b" />
+                <ellipse cx="110" cy="198" rx="38" ry="28" fill="#c98a4a" />
+                <ellipse cx="86" cy="230" rx="15" ry="10" fill="#6a3f1a" />
+                <ellipse cx="134" cy="230" rx="15" ry="10" fill="#6a3f1a" />
+                <path d="M74 182 Q110 198 146 182 L142 216 Q110 224 78 216 Z" fill="#3a6a9a" />
+                <path
+                  d="M82 190 L82 216 M98 194 L98 220 M114 194 L114 220 M130 190 L130 216"
+                  stroke="#2a4a6a"
+                  stroke-width="2"
+                />
+                <rect x="76" y="208" width="68" height="8" rx="3" fill="#5a3010" />
+                <rect x="104" y="206" width="12" height="12" rx="2" fill="#d9a020" />
+                <ellipse
+                  cx="64"
+                  cy="188"
+                  rx="13"
+                  ry="22"
+                  fill="#8a5a2b"
+                  transform="rotate(-20 64 188)"
+                />
+                <ellipse
+                  cx="156"
+                  cy="188"
+                  rx="13"
+                  ry="22"
+                  fill="#8a5a2b"
+                  transform="rotate(20 156 188)"
+                />
+                <circle cx="110" cy="132" r="52" fill="#a06a35" />
+                <circle cx="62" cy="130" r="17" fill="#8a5a2b" />
+                <circle cx="158" cy="130" r="17" fill="#8a5a2b" />
+                <circle cx="62" cy="130" r="10" fill="#d9a06a" />
+                <circle cx="158" cy="130" r="10" fill="#d9a06a" />
+                <ellipse cx="110" cy="146" rx="30" ry="23" fill="#e8bf8a" />
+                <circle cx="94" cy="124" r="6" fill="#2a1a0a" />
+                <circle cx="126" cy="124" r="6" fill="#2a1a0a" />
+                <circle cx="96" cy="122" r="2" fill="#fff" />
+                <circle cx="128" cy="122" r="2" fill="#fff" />
+                <path
+                  d="M86 114 Q94 110 102 114"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M118 114 Q126 110 134 114"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <ellipse cx="110" cy="140" rx="5" ry="3.5" fill="#6a3f1a" />
+                <path
+                  d="M98 152 Q110 160 122 152"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path d="M50 106 Q110 58 170 106 L162 98 Q110 50 58 98 Z" fill="#1a1a1a" />
+                <path d="M50 106 Q110 98 170 106 L170 116 Q110 108 50 116 Z" fill="#1a1a1a" />
+                <path d="M58 112 Q110 104 162 112 L158 106 Q110 98 62 106 Z" fill="#333" />
+                <path d="M158 108 Q172 92 178 74 Q170 84 160 100 Z" fill="#d94f4f" />
+                <circle cx="110" cy="94" r="8" fill="#f0e6d0" />
+                <circle cx="106.5" cy="93" r="1.8" fill="#1a1a1a" />
+                <circle cx="113.5" cy="93" r="1.8" fill="#1a1a1a" />
+                <path d="M106 99 L114 99" stroke="#1a1a1a" stroke-width="1.4" />
+                <path d="M84 118 Q94 110 104 118 Q94 128 84 118 Z" fill="#1a1a1a" />
+                <path d="M84 118 Q60 108 48 96" stroke="#1a1a1a" stroke-width="2.5" fill="none" />
+              </svg>
+              <span class="crew-label">Großer Pirat</span>
+            </button>
+          </div>
+
+          <p class="hint">🤝 Kein Verlieren – nur gemeinsam gewinnen</p>
+        </div>
+      </div>
+
+      <!-- ===== KARTE ===== -->
+      <div class="screen" id="screen-map">
+        <div class="map-header">
+          <div class="pill reise-pill" id="reisePill">🐒 Dschungel</div>
+          <div class="pill">⭐ <span id="starCount">0</span>/12</div>
+          <div class="pill">🤝⭐ <span id="teamCount">0</span></div>
+          <div class="pill icon-only" onclick="resetGame()" title="Neu starten">🔄</div>
+        </div>
+
+        <div class="map-wrap">
+          <div class="pergament">
+            <div class="pergament-inner" id="pergamentInner">
+              <svg
+                class="map-svg"
+                id="mapSvg"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              ></svg>
+            </div>
+            <div id="truhenLayer"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TRUHE GROSS ===== -->
+      <div class="overlay" id="truheOverlay">
+        <div class="truhe-big" id="truheBig" onclick="oeffneTruhe()">🎁</div>
+        <p class="overlay-text" id="overlayHint">Tippe die Truhe an!</p>
+      </div>
+
+      <!-- ===== AUFGABE ===== -->
+      <div class="screen" id="screen-task">
+        <div class="task-header">
+          <div class="pill icon-only" onclick="goMap()">⬅️</div>
+          <div class="pill">⭐ <span id="starCount2">0</span>/12</div>
+          <div class="pill icon-only" onclick="vorlesen()">🔊</div>
+          <div class="pill icon-only" onclick="stimmeWechseln()" title="Stimme wechseln">🎙️</div>
+        </div>
+        <div class="task-card">
+          <div class="task-icon" id="taskIcon">🔎</div>
+          <div class="task-text" id="taskText">…</div>
+          <button class="btn btn-listen" onclick="vorlesen()">🔊 Aufgabe vorlesen</button>
+          <div class="task-help" id="taskHelp" aria-live="polite"></div>
+        </div>
+        <div class="task-timer" id="taskTimer">⏱️ Bereit?</div>
+        <div class="task-buttons">
+          <button class="btn-small" onclick="nochMal()">🔁 Noch mal</button>
+          <button class="btn-small" onclick="zeigeTipp()">💡 Tipp / Lösung</button>
+          <button class="btn-small" onclick="nichtGeschafft()">🙈 Nicht geschafft – Antwort zeigen</button>
+          <button class="btn-small" onclick="erledigt()">✅ Geschafft</button>
+        </div>
+      </div>
+
+      <!-- ===== BELOHNUNG ===== -->
+      <div class="screen center" id="screen-reward">
+        <div class="reward-star">⭐</div>
+        <div class="reward-title" id="rewardText">Super gemacht!</div>
+        <p class="reward-sub" id="rewardSub">Dein Stern wandert auf die Schatzkarte!</p>
+        <button class="btn btn-done" style="padding: 16px 34px" onclick="goMap()">
+          ➡️ Weiter zur Karte
+        </button>
+      </div>
+
+      <!-- ===== FINALE ===== -->
+      <div class="screen center" id="screen-finale">
+        <div class="finale-gem" id="finaleIcon">💎</div>
+        <div class="finale-title" id="finaleTitle">SCHATZ!</div>
+        <p class="reward-sub" id="finaleSub">
+          Du hast den Schatz gefunden – gemeinsam mit deinem Team!
+        </p>
+        <button class="btn btn-done" style="padding: 16px 34px" onclick="neueReise()">
+          🔁 Neue Reise starten
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /* ============================================================
+   REISE 1: DSCHUNGEL 🐒  (D001–D100)
+   ============================================================ */
+      const AUFGABEN_DSCHUNGEL = [
+        {
+          id: "D001",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das wie ein Blatt aussieht.",
+        },
+        {
+          id: "D002",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das braun ist wie ein Baumstamm.",
+        },
+        {
+          id: "D003",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das weich ist wie Moos.",
+        },
+        {
+          id: "D004",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du zum Essen brauchst.",
+        },
+        {
+          id: "D005",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das rund ist wie eine Kokosnuss.",
+        },
+        {
+          id: "D006",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das grün ist.",
+        },
+        {
+          id: "D007",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das glitzert wie ein Wassertropfen.",
+        },
+        {
+          id: "D008",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du anziehen kannst.",
+        },
+        {
+          id: "D009",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das leicht ist wie eine Feder.",
+        },
+        {
+          id: "D010",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das größer ist als deine Hand.",
+        },
+        {
+          id: "D011",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Holz ist wie ein Baum.",
+        },
+        {
+          id: "D012",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde zwei Dinge, die zusammenpassen wie Blatt und Ast.",
+        },
+        {
+          id: "D013",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das Löcher hat wie ein Blatt.",
+        },
+        {
+          id: "D014",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das leichter ist als ein Buch.",
+        },
+        {
+          id: "D015",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das Geräusche macht wie ein Tier.",
+        },
+        {
+          id: "D016",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Metall ist.",
+        },
+        {
+          id: "D017",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man falten kann wie ein Blatt.",
+        },
+        {
+          id: "D018",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde drei Dinge, die zur Küche gehören.",
+        },
+        {
+          id: "D019",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das schwimmen kann wie ein Blatt im Wasser.",
+        },
+        {
+          id: "D020",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man öffnen und schließen kann.",
+        },
+        {
+          id: "D021",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas Grünes wie ein Dschungelblatt.",
+        },
+        {
+          id: "D022",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das wie ein Kreis aussieht.",
+        },
+        {
+          id: "D023",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat eine Banane?",
+        },
+        {
+          id: "D024",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Gelbes wie eine Sonne.",
+        },
+        {
+          id: "D025",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas, das eckig ist.",
+        },
+        {
+          id: "D026",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat der Himmel über dem Dschungel?",
+        },
+        {
+          id: "D027",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Blaues wie Wasser.",
+        },
+        {
+          id: "D028",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas, das wie ein Viereck aussieht.",
+        },
+        {
+          id: "D029",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat Gras?",
+        },
+        {
+          id: "D030",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Braunes wie Erde.",
+        },
+        {
+          id: "D031",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Dreieckiges.",
+        },
+        {
+          id: "D032",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Nenne drei Dinge, die grün sind.",
+        },
+        {
+          id: "D033",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das blau und rund ist.",
+        },
+        {
+          id: "D034",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Sortiere drei Gegenstände von hell nach dunkel.",
+        },
+        {
+          id: "D035",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Form hat ein Würfel?",
+        },
+        {
+          id: "D036",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das rot und klein ist wie eine Beere.",
+        },
+        {
+          id: "D037",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Nenne drei Dinge, die rund sind.",
+        },
+        {
+          id: "D038",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Form hat ein Ball?",
+        },
+        {
+          id: "D039",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde zwei Dinge mit derselben Farbe.",
+        },
+        {
+          id: "D040",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe entsteht, wenn man Blau und Gelb mischt?",
+        },
+        {
+          id: "D041",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Hüpfe wie ein Frosch durch den Dschungel. Drei Mal!",
+        },
+        {
+          id: "D042",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Klatsche fünf Mal wie ein Affe.",
+        },
+        {
+          id: "D043",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Streck dich ganz hoch wie ein Dschungelbaum.",
+        },
+        {
+          id: "D044",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Wackle mit dem Kopf wie ein Papagei.",
+        },
+        {
+          id: "D045",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach dich ganz klein wie ein Käfer.",
+        },
+        {
+          id: "D046",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Stampfe dreimal wie ein Elefant.",
+        },
+        {
+          id: "D047",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Winke mit beiden Händen wie ein Äffchen.",
+        },
+        {
+          id: "D048",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Dreh dich einmal im Kreis wie ein Wirbelwind.",
+        },
+        {
+          id: "D049",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Klopfe dir auf die Knie wie ein Trommler.",
+        },
+        {
+          id: "D050",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach ein großes Gähnen wie ein Löwe.",
+        },
+        {
+          id: "D051",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Steh zehn Sekunden auf einem Bein wie ein Flamingo.",
+        },
+        {
+          id: "D052",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Geh rückwärts wie ein Krebs.",
+        },
+        {
+          id: "D053",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach fünf Hampelmänner wie ein Affe.",
+        },
+        {
+          id: "D054",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Balanciere auf einer Linie wie auf einem Ast.",
+        },
+        {
+          id: "D055",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Tanze zehn Sekunden wie ein Papagei.",
+        },
+        {
+          id: "D056",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Springe dreimal hoch und lande leise wie eine Katze.",
+        },
+        {
+          id: "D057",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Krieche wie eine Schlange durch den Dschungel.",
+        },
+        {
+          id: "D058",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Wirf einen Luftballon hoch und fang ihn wie eine Kokosnuss.",
+        },
+        {
+          id: "D059",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach zehn kleine Schritte auf Zehenspitzen wie ein Tiger.",
+        },
+        {
+          id: "D060",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Bewege dich wie ein Affe von Ast zu Ast.",
+        },
+        {
+          id: "D061",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Welches Tier sagt Miau und klettert gern?",
+        },
+        {
+          id: "D062",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat vier Beine und bellt?",
+        },
+        {
+          id: "D063",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was leuchtet nachts über dem Dschungel?",
+        },
+        {
+          id: "D064",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was kannst du aufmachen und wieder schließen?",
+        },
+        {
+          id: "D065",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Welches Tier sagt Quak und lebt im Teich?",
+        },
+        {
+          id: "D066",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fährst du auf der Straße?",
+        },
+        {
+          id: "D067",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was trinkst du, wenn du Durst hast?",
+        },
+        {
+          id: "D068",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was scheint am Tag über dem Dschungel?",
+        },
+        {
+          id: "D069",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ziehst du an die Füße?",
+        },
+        {
+          id: "D070",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was machst du, wenn du müde bist?",
+        },
+        {
+          id: "D071",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat vier Beine, aber kann nicht laufen?",
+        },
+        {
+          id: "D072",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was wird nass, wenn es trocknet?",
+        },
+        {
+          id: "D073",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Zähne, aber keinen Mund?",
+        },
+        {
+          id: "D074",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ist rund, aber keine Kugel?",
+        },
+        {
+          id: "D075",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fliegt ohne Flügel?",
+        },
+        {
+          id: "D076",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat einen Kopf, aber kein Gesicht?",
+        },
+        {
+          id: "D077",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was geht hoch, aber nie runter?",
+        },
+        {
+          id: "D078",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Blätter, aber keinen Baum?",
+        },
+        {
+          id: "D079",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat ein Auge, aber sieht nicht?",
+        },
+        {
+          id: "D080",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat einen Hals, aber keinen Kopf?",
+        },
+        {
+          id: "D081",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Gebt euch gegenseitig ein High-Five wie zwei Affen!",
+        },
+        {
+          id: "D082",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Findet zusammen drei grüne Dinge.",
+        },
+        {
+          id: "D083",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht gemeinsam ein Tiergeräusch aus dem Dschungel.",
+        },
+        {
+          id: "D084",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Baut zusammen einen Turm aus drei Dingen.",
+        },
+        {
+          id: "D085",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Singt zusammen ein Lied wie die Vögel.",
+        },
+        {
+          id: "D086",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Haltet euch an den Händen und hüpft zusammen.",
+        },
+        {
+          id: "D087",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Flüstert euch etwas Nettes zu.",
+        },
+        {
+          id: "D088",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen ein lustiges Affengesicht.",
+        },
+        {
+          id: "D089",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Zählt zusammen bis drei.",
+        },
+        {
+          id: "D090",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Gebt euch eine Umarmung wie zwei Freunde.",
+        },
+        {
+          id: "D091",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Erzählt euch gegenseitig einen Witz.",
+        },
+        {
+          id: "D092",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Findet zusammen fünf Dinge, die rund sind.",
+        },
+        {
+          id: "D093",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen eine lebende Statue wie ein Dschungeltier.",
+        },
+        {
+          id: "D094",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Zählt gemeinsam laut bis zehn, ohne zu lachen.",
+        },
+        {
+          id: "D095",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Versteckt zusammen einen Gegenstand und findet ihn wieder.",
+        },
+        {
+          id: "D096",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Erfindet zusammen ein neues Dschungel-Tiergeräusch.",
+        },
+        {
+          id: "D097",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Baut zusammen eine Brücke aus euren Händen.",
+        },
+        {
+          id: "D098",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Flüstert euch ein Geheimnis ins Ohr.",
+        },
+        {
+          id: "D099",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen eine La-Ola-Welle wie die Affen.",
+        },
+        {
+          id: "D100",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Klatscht zusammen im Takt: dreimal schnell, einmal langsam.",
+        },
+      ];
+
+      /* ============================================================
+   REISE 2: UNTERWASSER 🐠  (U001–U100)
+   ============================================================ */
+      const AUFGABEN_UNTERWASSER = [
+        {
+          id: "U001",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das blau ist wie das Meer.",
+        },
+        {
+          id: "U002",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das glitzert wie eine Perle.",
+        },
+        {
+          id: "U003",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das weich ist wie eine Muschel.",
+        },
+        {
+          id: "U004",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das rund ist wie eine Perle.",
+        },
+        {
+          id: "U005",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du zum Essen brauchst.",
+        },
+        {
+          id: "U006",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das schwimmen kann.",
+        },
+        {
+          id: "U007",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du anziehen kannst.",
+        },
+        {
+          id: "U008",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das leicht ist wie eine Feder.",
+        },
+        {
+          id: "U009",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das größer ist als deine Hand.",
+        },
+        {
+          id: "U010",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das kalt ist.",
+        },
+        {
+          id: "U011",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Glas ist wie eine Flasche.",
+        },
+        {
+          id: "U012",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde zwei Dinge, die zusammenpassen wie Muschel und Perle.",
+        },
+        {
+          id: "U013",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das Löcher hat wie ein Schwamm.",
+        },
+        {
+          id: "U014",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das leichter ist als ein Buch.",
+        },
+        {
+          id: "U015",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das Geräusche macht wie Wasser.",
+        },
+        {
+          id: "U016",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Metall ist.",
+        },
+        {
+          id: "U017",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man falten kann.",
+        },
+        {
+          id: "U018",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde drei Dinge, die zur Küche gehören.",
+        },
+        {
+          id: "U019",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man öffnen und schließen kann wie eine Muschel.",
+        },
+        {
+          id: "U020",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man gießen kann.",
+        },
+        {
+          id: "U021",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas Blaues wie das Meer.",
+        },
+        {
+          id: "U022",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das wie ein Kreis aussieht.",
+        },
+        {
+          id: "U023",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat eine Zitrone?",
+        },
+        {
+          id: "U024",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Gelbes wie ein Seestern.",
+        },
+        {
+          id: "U025",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas, das eckig ist.",
+        },
+        {
+          id: "U026",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat der Himmel über dem Meer?",
+        },
+        {
+          id: "U027",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Rotes wie eine Krabbe.",
+        },
+        {
+          id: "U028",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas, das wie ein Viereck aussieht.",
+        },
+        {
+          id: "U029",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat Gras?",
+        },
+        {
+          id: "U030",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Grünes wie Seegras.",
+        },
+        {
+          id: "U031",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Dreieckiges.",
+        },
+        {
+          id: "U032",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Nenne drei Dinge, die blau sind.",
+        },
+        {
+          id: "U033",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das blau und rund ist.",
+        },
+        {
+          id: "U034",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Sortiere drei Gegenstände von hell nach dunkel.",
+        },
+        {
+          id: "U035",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Form hat ein Ball?",
+        },
+        {
+          id: "U036",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das rot und klein ist wie eine Perle.",
+        },
+        {
+          id: "U037",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Nenne drei Dinge, die rund sind.",
+        },
+        {
+          id: "U038",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat eine Muschel innen?",
+        },
+        {
+          id: "U039",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde zwei Dinge mit derselben Farbe.",
+        },
+        {
+          id: "U040",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe entsteht, wenn man Blau und Gelb mischt?",
+        },
+        {
+          id: "U041",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Schwimme wie ein Fisch mit den Armen. Drei Mal!",
+        },
+        {
+          id: "U042",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Klatsche fünf Mal wie eine Robbe.",
+        },
+        {
+          id: "U043",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Streck dich ganz lang wie ein Seegras.",
+        },
+        {
+          id: "U044",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Wackle mit den Armen wie eine Qualle.",
+        },
+        {
+          id: "U045",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach dich ganz klein wie ein Seepferdchen.",
+        },
+        {
+          id: "U046",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Stampfe dreimal wie ein Wal.",
+        },
+        {
+          id: "U047",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Winke mit beiden Händen wie eine Krabbe.",
+        },
+        {
+          id: "U048",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Dreh dich einmal im Kreis wie ein Strudel.",
+        },
+        {
+          id: "U049",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Klopfe dir auf die Knie wie ein Specht.",
+        },
+        {
+          id: "U050",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach ein großes Gähnen wie ein Hai.",
+        },
+        {
+          id: "U051",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Steh zehn Sekunden auf einem Bein wie ein Flamingo.",
+        },
+        {
+          id: "U052",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Geh rückwärts wie eine Krabbe.",
+        },
+        {
+          id: "U053",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach fünf Hampelmänner wie ein Delfin.",
+        },
+        {
+          id: "U054",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Balanciere auf einer Linie wie auf einem Boot.",
+        },
+        {
+          id: "U055",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Tanze zehn Sekunden wie ein Oktopus.",
+        },
+        {
+          id: "U056",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Springe dreimal hoch und lande leise wie eine Robbe.",
+        },
+        {
+          id: "U057",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Krieche wie eine Schnecke durch den Raum.",
+        },
+        {
+          id: "U058",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Wirf einen Luftballon hoch und fang ihn wie eine Perle.",
+        },
+        {
+          id: "U059",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach zehn kleine Schritte auf Zehenspitzen wie ein Krebs.",
+        },
+        {
+          id: "U060",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Bewege dich wie ein Oktopus mit acht Armen.",
+        },
+        {
+          id: "U061",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Welches Tier sagt Blubb und lebt im Wasser?",
+        },
+        {
+          id: "U062",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Flossen und schwimmt?",
+        },
+        {
+          id: "U063",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was leuchtet nachts über dem Meer?",
+        },
+        {
+          id: "U064",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was kannst du aufmachen und wieder schließen wie eine Muschel?",
+        },
+        {
+          id: "U065",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Welches Tier hat acht Arme?",
+        },
+        {
+          id: "U066",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fährt auf dem Wasser?",
+        },
+        {
+          id: "U067",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was trinkst du, wenn du Durst hast?",
+        },
+        {
+          id: "U068",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was scheint am Tag über dem Meer?",
+        },
+        {
+          id: "U069",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ziehst du an die Füße, wenn du ins Wasser gehst?",
+        },
+        {
+          id: "U070",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was machst du, wenn du müde bist?",
+        },
+        {
+          id: "U071",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat vier Beine, aber kann nicht laufen?",
+        },
+        {
+          id: "U072",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was wird nass, wenn es trocknet?",
+        },
+        {
+          id: "U073",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Zähne, aber keinen Mund?",
+        },
+        {
+          id: "U074",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ist rund, aber keine Kugel?",
+        },
+        {
+          id: "U075",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fliegt ohne Flügel?",
+        },
+        {
+          id: "U076",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat einen Kopf, aber kein Gesicht?",
+        },
+        {
+          id: "U077",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was geht hoch, aber nie runter?",
+        },
+        {
+          id: "U078",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Blätter, aber keinen Baum?",
+        },
+        {
+          id: "U079",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat ein Auge, aber sieht nicht?",
+        },
+        {
+          id: "U080",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat einen Hals, aber keinen Kopf?",
+        },
+        {
+          id: "U081",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Gebt euch gegenseitig ein High-Five wie zwei Delfine!",
+        },
+        {
+          id: "U082",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Findet zusammen drei blaue Dinge.",
+        },
+        {
+          id: "U083",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht gemeinsam ein Meeres-Tiergeräusch.",
+        },
+        {
+          id: "U084",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Baut zusammen einen Turm aus drei Dingen.",
+        },
+        {
+          id: "U085",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Singt zusammen ein Lied wie die Wale.",
+        },
+        {
+          id: "U086",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Haltet euch an den Händen und schwimmt zusammen.",
+        },
+        {
+          id: "U087",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Flüstert euch etwas Nettes zu.",
+        },
+        {
+          id: "U088",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen ein lustiges Fischgesicht.",
+        },
+        {
+          id: "U089",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Zählt zusammen bis drei.",
+        },
+        {
+          id: "U090",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Gebt euch eine Umarmung wie zwei Freunde.",
+        },
+        {
+          id: "U091",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Erzählt euch gegenseitig einen Witz.",
+        },
+        {
+          id: "U092",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Findet zusammen fünf Dinge, die rund sind.",
+        },
+        {
+          id: "U093",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen eine lebende Statue wie ein Meerestier.",
+        },
+        {
+          id: "U094",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Zählt gemeinsam laut bis zehn, ohne zu lachen.",
+        },
+        {
+          id: "U095",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Versteckt zusammen einen Gegenstand und findet ihn wieder.",
+        },
+        {
+          id: "U096",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Erfindet zusammen ein neues Meeres-Tiergeräusch.",
+        },
+        {
+          id: "U097",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Baut zusammen eine Brücke aus euren Händen.",
+        },
+        {
+          id: "U098",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Flüstert euch ein Geheimnis ins Ohr.",
+        },
+        {
+          id: "U099",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen eine La-Ola-Welle wie die Wellen.",
+        },
+        {
+          id: "U100",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Klatscht zusammen im Takt: dreimal schnell, einmal langsam.",
+        },
+      ];
+
+      /* ============================================================
+   REISE 3: WELTRAUM 🚀  (W001–W100)
+   ============================================================ */
+      const AUFGABEN_WELTRAUM = [
+        {
+          id: "W001",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das glitzert wie ein Stern.",
+        },
+        {
+          id: "W002",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das rund ist wie ein Planet.",
+        },
+        {
+          id: "W003",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das weich ist wie eine Wolke.",
+        },
+        {
+          id: "W004",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du zum Essen brauchst.",
+        },
+        {
+          id: "W005",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du anziehen kannst.",
+        },
+        {
+          id: "W006",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das leicht ist wie eine Feder.",
+        },
+        {
+          id: "W007",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das größer ist als deine Hand.",
+        },
+        {
+          id: "W008",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das kalt ist.",
+        },
+        {
+          id: "W009",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das Geräusche macht.",
+        },
+        {
+          id: "W010",
+          kategorie: "haushalt",
+          stufe: "klein",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das du mit den Füßen benutzt.",
+        },
+        {
+          id: "W011",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Metall ist wie eine Rakete.",
+        },
+        {
+          id: "W012",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde zwei Dinge, die zusammenpassen.",
+        },
+        {
+          id: "W013",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das Löcher hat.",
+        },
+        {
+          id: "W014",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das leichter ist als ein Buch.",
+        },
+        {
+          id: "W015",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Glas ist wie ein Teleskop.",
+        },
+        {
+          id: "W016",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man falten kann.",
+        },
+        {
+          id: "W017",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde drei Dinge, die zur Küche gehören.",
+        },
+        {
+          id: "W018",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das schwimmen kann.",
+        },
+        {
+          id: "W019",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das man öffnen und schließen kann.",
+        },
+        {
+          id: "W020",
+          kategorie: "haushalt",
+          stufe: "gross",
+          icon: "🔎",
+          teamStern: false,
+          sprechtext: "Finde etwas, das aus Holz ist.",
+        },
+        {
+          id: "W021",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas Gelbes wie ein Stern.",
+        },
+        {
+          id: "W022",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das wie ein Kreis aussieht.",
+        },
+        {
+          id: "W023",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat der Mond?",
+        },
+        {
+          id: "W024",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Blaues wie der Himmel.",
+        },
+        {
+          id: "W025",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas, das eckig ist.",
+        },
+        {
+          id: "W026",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat die Sonne?",
+        },
+        {
+          id: "W027",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Rotes wie der Mars.",
+        },
+        {
+          id: "W028",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Zeig mir etwas, das wie ein Viereck aussieht.",
+        },
+        {
+          id: "W029",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe hat Gras auf der Erde?",
+        },
+        {
+          id: "W030",
+          kategorie: "farben",
+          stufe: "klein",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Grünes.",
+        },
+        {
+          id: "W031",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas Dreieckiges.",
+        },
+        {
+          id: "W032",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Nenne drei Dinge, die gelb sind.",
+        },
+        {
+          id: "W033",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das blau und rund ist.",
+        },
+        {
+          id: "W034",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Sortiere drei Gegenstände von hell nach dunkel.",
+        },
+        {
+          id: "W035",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Form hat ein Planet?",
+        },
+        {
+          id: "W036",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde etwas, das rot und klein ist.",
+        },
+        {
+          id: "W037",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Nenne drei Dinge, die rund sind.",
+        },
+        {
+          id: "W038",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Form hat ein Stern?",
+        },
+        {
+          id: "W039",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Finde zwei Dinge mit derselben Farbe.",
+        },
+        {
+          id: "W040",
+          kategorie: "farben",
+          stufe: "gross",
+          icon: "🌈",
+          teamStern: false,
+          sprechtext: "Welche Farbe entsteht, wenn man Blau und Gelb mischt?",
+        },
+        {
+          id: "W041",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Schwebe wie ein Astronaut. Drei Mal!",
+        },
+        {
+          id: "W042",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Klatsche fünf Mal wie ein Stern.",
+        },
+        {
+          id: "W043",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Streck dich ganz hoch wie eine Rakete.",
+        },
+        {
+          id: "W044",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Wackle mit dem Kopf wie ein Ufo.",
+        },
+        {
+          id: "W045",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach dich ganz klein wie ein Mond.",
+        },
+        {
+          id: "W046",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Stampfe dreimal wie ein Meteorit.",
+        },
+        {
+          id: "W047",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Winke mit beiden Händen wie ein Alien.",
+        },
+        {
+          id: "W048",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Dreh dich einmal im Kreis wie ein Planet.",
+        },
+        {
+          id: "W049",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Klopfe dir auf die Knie wie ein Roboter.",
+        },
+        {
+          id: "W050",
+          kategorie: "bewegung",
+          stufe: "klein",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach ein großes Gähnen wie ein Astronaut.",
+        },
+        {
+          id: "W051",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Steh zehn Sekunden auf einem Bein wie ein Astronaut.",
+        },
+        {
+          id: "W052",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Geh rückwärts wie ein Roboter.",
+        },
+        {
+          id: "W053",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach fünf Hampelmänner wie ein Alien.",
+        },
+        {
+          id: "W054",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Balanciere auf einer Linie wie auf einer Rakete.",
+        },
+        {
+          id: "W055",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Tanze zehn Sekunden wie ein Ufo.",
+        },
+        {
+          id: "W056",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Springe dreimal hoch und lande leise wie auf dem Mond.",
+        },
+        {
+          id: "W057",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Krieche wie ein Alien durch den Raum.",
+        },
+        {
+          id: "W058",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Wirf einen Luftballon hoch und fang ihn wie einen Stern.",
+        },
+        {
+          id: "W059",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Mach zehn kleine Schritte auf Zehenspitzen wie ein Astronaut.",
+        },
+        {
+          id: "W060",
+          kategorie: "bewegung",
+          stufe: "gross",
+          icon: "🐸",
+          teamStern: false,
+          sprechtext: "Bewege dich wie ein Roboter durch den Raum.",
+        },
+        {
+          id: "W061",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was leuchtet nachts am Himmel?",
+        },
+        {
+          id: "W062",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ist rund und heißt Mond?",
+        },
+        {
+          id: "W063",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fliegt hoch in den Himmel?",
+        },
+        {
+          id: "W064",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was kannst du aufmachen und wieder schließen?",
+        },
+        {
+          id: "W065",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Welches Tier sagt Miau und lebt auf der Erde?",
+        },
+        {
+          id: "W066",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fährst du auf der Straße?",
+        },
+        {
+          id: "W067",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was trinkst du, wenn du Durst hast?",
+        },
+        {
+          id: "W068",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was scheint am Tag am Himmel?",
+        },
+        {
+          id: "W069",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ziehst du an die Füße?",
+        },
+        {
+          id: "W070",
+          kategorie: "raetsel",
+          stufe: "klein",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was machst du, wenn du müde bist?",
+        },
+        {
+          id: "W071",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat vier Beine, aber kann nicht laufen?",
+        },
+        {
+          id: "W072",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was wird nass, wenn es trocknet?",
+        },
+        {
+          id: "W073",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Zähne, aber keinen Mund?",
+        },
+        {
+          id: "W074",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was ist rund, aber keine Kugel?",
+        },
+        {
+          id: "W075",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was fliegt ohne Flügel?",
+        },
+        {
+          id: "W076",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat einen Kopf, aber kein Gesicht?",
+        },
+        {
+          id: "W077",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was geht hoch, aber nie runter?",
+        },
+        {
+          id: "W078",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat Blätter, aber keinen Baum?",
+        },
+        {
+          id: "W079",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat ein Auge, aber sieht nicht?",
+        },
+        {
+          id: "W080",
+          kategorie: "raetsel",
+          stufe: "gross",
+          icon: "🧩",
+          teamStern: false,
+          sprechtext: "Was hat einen Hals, aber keinen Kopf?",
+        },
+        {
+          id: "W081",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Gebt euch gegenseitig ein High-Five wie zwei Astronauten!",
+        },
+        {
+          id: "W082",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Findet zusammen drei gelbe Dinge.",
+        },
+        {
+          id: "W083",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht gemeinsam ein Alien-Geräusch.",
+        },
+        {
+          id: "W084",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Baut zusammen einen Turm aus drei Dingen.",
+        },
+        {
+          id: "W085",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Singt zusammen ein Lied wie die Sterne.",
+        },
+        {
+          id: "W086",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Haltet euch an den Händen und schwebt zusammen.",
+        },
+        {
+          id: "W087",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Flüstert euch etwas Nettes zu.",
+        },
+        {
+          id: "W088",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen ein lustiges Alien-Gesicht.",
+        },
+        {
+          id: "W089",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Zählt zusammen bis drei.",
+        },
+        {
+          id: "W090",
+          kategorie: "team",
+          stufe: "klein",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Gebt euch eine Umarmung wie zwei Freunde.",
+        },
+        {
+          id: "W091",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Erzählt euch gegenseitig einen Witz.",
+        },
+        {
+          id: "W092",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Findet zusammen fünf Dinge, die rund sind.",
+        },
+        {
+          id: "W093",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen eine lebende Statue wie ein Alien.",
+        },
+        {
+          id: "W094",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Zählt gemeinsam laut bis zehn, ohne zu lachen.",
+        },
+        {
+          id: "W095",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Versteckt zusammen einen Gegenstand und findet ihn wieder.",
+        },
+        {
+          id: "W096",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Erfindet zusammen ein neues Alien-Geräusch.",
+        },
+        {
+          id: "W097",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Baut zusammen eine Brücke aus euren Händen.",
+        },
+        {
+          id: "W098",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Flüstert euch ein Geheimnis ins Ohr.",
+        },
+        {
+          id: "W099",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Macht zusammen eine La-Ola-Welle wie die Sterne.",
+        },
+        {
+          id: "W100",
+          kategorie: "team",
+          stufe: "gross",
+          icon: "🤝",
+          teamStern: true,
+          sprechtext: "Klatscht zusammen im Takt: dreimal schnell, einmal langsam.",
+        },
+      ];
+
+      /* ============================================================
+   REISEN-DEFINITION
+   ============================================================ */
+      const REISEN = {
+        dschungel: {
+          name: "Dschungel",
+          icon: "🐒",
+          farben: { bg1: "#1a1008", bg2: "#0e0904" },
+          pergament:
+            "radial-gradient(ellipse at 30% 20%, rgba(170,125,60,.22), transparent 55%), radial-gradient(ellipse at 75% 80%, rgba(130,90,40,.24), transparent 55%), radial-gradient(circle at 50% 50%, #f2ddb0 0%, #e6cc96 48%, #cfab66 100%)",
+          truheIcon: "🎁",
+          finaleIcon: "💎",
+          pool: AUFGABEN_DSCHUNGEL,
+        },
+        unterwasser: {
+          name: "Unterwasser",
+          icon: "🐠",
+          farben: { bg1: "#041a2a", bg2: "#020c14" },
+          pergament:
+            "radial-gradient(ellipse at 30% 20%, rgba(80,140,180,.25), transparent 55%), radial-gradient(ellipse at 75% 80%, rgba(40,100,150,.28), transparent 55%), radial-gradient(circle at 50% 50%, #c8e8f0 0%, #9ed0e0 48%, #6aa8c0 100%)",
+          truheIcon: "🐚",
+          finaleIcon: "🐚",
+          pool: AUFGABEN_UNTERWASSER,
+        },
+        weltraum: {
+          name: "Weltraum",
+          icon: "🚀",
+          farben: { bg1: "#140a2a", bg2: "#080414" },
+          pergament:
+            "radial-gradient(ellipse at 30% 20%, rgba(150,100,220,.22), transparent 55%), radial-gradient(ellipse at 75% 80%, rgba(100,60,180,.25), transparent 55%), radial-gradient(circle at 50% 50%, #e0d0f0 0%, #b8a0d8 48%, #8060a8 100%)",
+          truheIcon: "🛸",
+          finaleIcon: "🌟",
+          pool: AUFGABEN_WELTRAUM,
+        },
+      };
+      const REIHENFOLGE = ["dschungel", "unterwasser", "weltraum"];
+      const STATIONEN = 12;
+
+      // Durchgehender, gut lesbarer Schlangenpfad. Die Stationen haben überall
+      // genügend Abstand und bleiben innerhalb des Pergaments.
+      const POSITIONEN = [
+        { x: 15, y: 82 }, { x: 32, y: 86 }, { x: 50, y: 82 },
+        { x: 68, y: 85 }, { x: 81, y: 75 }, { x: 76, y: 63 },
+        { x: 60, y: 60 }, { x: 43, y: 64 }, { x: 26, y: 61 },
+        { x: 19, y: 47 }, { x: 38, y: 39 }, { x: 62, y: 29 },
+      ];
+
+      /* ===== ZUSTAND ===== */
+      let state = {
+        stufe: "klein",
+        reise: "dschungel",
+        station: 0,
+        sterne: 0,
+        teamSterne: 0,
+        aktuelleAufgabe: null,
+        letzteId: null,
+      };
+
+      /* ============================================================
+   VERBESSERTE VORLESE-FUNKTION
+   ============================================================ */
+      let verfuegbareStimmen = [];
+      let gewaehlteStimme = null;
+
+      function ladeStimmen() {
+        if (!("speechSynthesis" in window)) return;
+        verfuegbareStimmen = window.speechSynthesis.getVoices();
+        if (verfuegbareStimmen.length === 0) {
+          window.speechSynthesis.onvoiceschanged = () => {
+            verfuegbareStimmen = window.speechSynthesis.getVoices();
+            waehleBesteStimme();
+          };
+        } else {
+          waehleBesteStimme();
+        }
+      }
+
+      function waehleBesteStimme() {
+        const deutsche = verfuegbareStimmen.filter(
+          (v) => v.lang && v.lang.toLowerCase().startsWith("de"),
+        );
+        if (deutsche.length === 0) {
+          gewaehlteStimme = null;
+          return;
+        }
+        // Bevorzuge installierte hochwertige deutsche Stimmen; verfügbar je nach Gerät.
+        const prioritaeten = [
+          /de-DE.*(natural|neural|premium|enhanced)/i,
+          /(google|microsoft).*(deutsch|german|de-de)/i,
+          /(natural|neural|premium|enhanced)/i,
+          /katja/i, /hedda/i, /anna/i, /petra/i, /markus/i, /stefan/i,
+        ];
+        for (const p of prioritaeten) {
+          const treffer = deutsche.find((v) => p.test(v.name));
+          if (treffer) {
+            gewaehlteStimme = treffer;
+            return;
+          }
+        }
+        gewaehlteStimme = deutsche[0];
+      }
+
+      if ("speechSynthesis" in window) {
+        ladeStimmen();
+        window.speechSynthesis.onvoiceschanged = () => {
+          verfuegbareStimmen = window.speechSynthesis.getVoices();
+          if (!gewaehlteStimme) waehleBesteStimme();
+        };
+      }
+
+      function vorlesen() {
+        if (!state.aktuelleAufgabe) return;
+        if (!("speechSynthesis" in window)) {
+          alert("Vorlesen wird von diesem Browser nicht unterstützt.");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(state.aktuelleAufgabe.sprechtext);
+        if (!gewaehlteStimme) waehleBesteStimme();
+        if (gewaehlteStimme) u.voice = gewaehlteStimme;
+        u.lang = "de-DE";
+        u.rate = 0.86;
+        u.pitch = 1.0;
+        u.volume = 1.0;
+        window.speechSynthesis.speak(u);
+      }
+
+      function stimmeWechseln() {
+        const deutsche = verfuegbareStimmen.filter(
+          (v) => v.lang && v.lang.toLowerCase().startsWith("de"),
+        );
+        if (deutsche.length === 0) {
+          alert("Keine deutsche Stimme gefunden.");
+          return;
+        }
+        const idx = deutsche.indexOf(gewaehlteStimme);
+        const naechste = deutsche[(idx + 1) % deutsche.length];
+        gewaehlteStimme = naechste;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance("Diese Stimme ist jetzt aktiv.");
+        u.voice = naechste;
+        u.lang = "de-DE";
+        u.rate = 0.92;
+        u.pitch = 1.05;
+        window.speechSynthesis.speak(u);
+      }
+
+      /* ===== SCREEN-WECHSEL ===== */
+      function zeige(id) {
+        document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      function startGame(stufe) {
+        state.stufe = stufe;
+        const saved = localStorage.getItem("schatzinsel");
+        if (saved) {
+          try {
+            const s = JSON.parse(saved);
+            if (s.stufe === stufe && s.reise) state = { ...state, ...s };
+          } catch (e) {}
+        }
+        renderMap();
+        zeige("screen-map");
+      }
+
+      function goMap() {
+        clearInterval(timerIntervall);
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        closeOverlay();
+        renderMap();
+        zeige("screen-map");
+      }
+
+      /* ============================================================
+   KARTE RENDERN (Themen-abhängig)
+   ============================================================ */
+      function renderMap() {
+        const r = REISEN[state.reise] || REISEN.dschungel;
+
+        // Farben & Hintergrund anwenden
+        document.getElementById("app").style.background = r.farben.bg1;
+        document.getElementById("pergamentInner").style.background = r.pergament;
+
+        document.getElementById("reisePill").textContent = r.icon + " " + r.name;
+        document.getElementById("starCount").textContent = state.sterne;
+        document.getElementById("starCount2").textContent = state.sterne;
+        document.getElementById("teamCount").textContent = state.teamSterne;
+
+        const svg = document.getElementById("mapSvg");
+        svg.innerHTML = "";
+
+        const NS = "http://www.w3.org/2000/svg";
+        function el(tag, attrs) {
+          const e = document.createElementNS(NS, tag);
+          for (const k in attrs) e.setAttribute(k, attrs[k]);
+          return e;
+        }
+
+        /* ---- Handgezeichnete Inselküste und flache Höhenlinien ---- */
+        svg.appendChild(el("path", {
+          d: "M 8 25 Q 13 16 26 18 Q 33 10 43 17 Q 54 9 64 18 Q 77 14 84 27 Q 94 34 88 45 Q 94 56 83 64 Q 82 76 69 79 Q 59 89 47 81 Q 34 89 26 78 Q 12 75 15 62 Q 5 52 12 42 Q 4 34 8 25 Z",
+          fill: "#71845a", opacity: ".18", stroke: "#5d5737", "stroke-width": ".85", "stroke-linejoin": "round"
+        }));
+        svg.appendChild(el("path", {
+          d: "M 12 27 Q 18 19 28 22 Q 36 14 44 21 Q 55 14 64 22 Q 76 18 81 29 Q 89 36 84 45 Q 90 54 79 62 Q 78 73 67 75 Q 58 84 47 77 Q 35 84 28 75 Q 17 72 19 61 Q 10 52 16 42 Q 9 34 12 27 Z",
+          fill: "none", stroke: "#f0d59a", "stroke-width": ".75", "stroke-dasharray": "1.1 1.2", opacity: ".9"
+        }));
+        for (const [cx, cy, rx, ry] of [[24,31,5,2],[73,38,6,2.5],[31,67,7,2],[63,70,5,2]]) {
+          svg.appendChild(el("ellipse", {cx, cy, rx, ry, fill:"none", stroke:"#786c45", "stroke-width":".35", opacity:".55", transform:`rotate(-18 ${cx} ${cy})`}));
+        }
+
+        /* ---- Deko abhängig vom Thema ---- */
+        if (state.reise === "dschungel") {
+          // Wellen
+          for (let i = 0; i < 6; i++) {
+            svg.appendChild(
+              el("path", {
+                d: `M${2 + i * 16},3 Q${6 + i * 16},1.5 ${10 + i * 16},3 T${18 + i * 16},3`,
+                fill: "none",
+                stroke: "#6a8a9a",
+                "stroke-width": "0.35",
+                opacity: "0.6",
+              }),
+            );
+            svg.appendChild(
+              el("path", {
+                d: `M${2 + i * 16},97 Q${6 + i * 16},95.5 ${10 + i * 16},97 T${18 + i * 16},97`,
+                fill: "none",
+                stroke: "#6a8a9a",
+                "stroke-width": "0.35",
+                opacity: "0.6",
+              }),
+            );
+          }
+          // Berge
+          function drawBerge(cx, cy, scale, count) {
+            const g = el("g", { transform: `translate(${cx}, ${cy}) scale(${scale})` });
+            for (let i = 0; i < count; i++) {
+              const x = (i - count / 2) * 4;
+              g.appendChild(
+                el("path", {
+                  d: `M${x - 4},3 L${x},-3 L${x + 4},3 Z`,
+                  fill: "#9a7a4a",
+                  stroke: "#5a3a18",
+                  "stroke-width": "0.2",
+                }),
+              );
+              g.appendChild(
+                el("path", {
+                  d: `M${x - 1.2},-0.8 L${x},-3 L${x + 1.2},-0.8 Z`,
+                  fill: "#f0e6d0",
+                  opacity: "0.9",
+                }),
+              );
+            }
+            svg.appendChild(g);
+          }
+          drawBerge(18, 88, 1.1, 4);
+          drawBerge(84, 18, 0.9, 3);
+          // Palmen
+          function drawPalme(cx, cy, scale) {
+            const g = el("g", { transform: `translate(${cx}, ${cy}) scale(${scale})` });
+            g.appendChild(
+              el("path", {
+                d: "M-0.5,0 Q0,-3 0.3,-6",
+                fill: "none",
+                stroke: "#6a4a1a",
+                "stroke-width": "0.7",
+                "stroke-linecap": "round",
+              }),
+            );
+            g.appendChild(
+              el("path", {
+                d: "M0.3,-6 Q-3,-7 -4,-5 Q-2,-5.5 0.3,-6",
+                fill: "#3a8a3a",
+                stroke: "#2a6a2a",
+                "stroke-width": "0.15",
+              }),
+            );
+            g.appendChild(
+              el("path", {
+                d: "M0.3,-6 Q3,-7 4,-5 Q2,-5.5 0.3,-6",
+                fill: "#3a8a3a",
+                stroke: "#2a6a2a",
+                "stroke-width": "0.15",
+              }),
+            );
+            g.appendChild(
+              el("path", {
+                d: "M0.3,-6 Q-2,-9 -4,-8 Q-2,-7.5 0.3,-6",
+                fill: "#4a9a4a",
+                stroke: "#2a6a2a",
+                "stroke-width": "0.15",
+              }),
+            );
+            g.appendChild(
+              el("path", {
+                d: "M0.3,-6 Q2,-9 4,-8 Q2,-7.5 0.3,-6",
+                fill: "#4a9a4a",
+                stroke: "#2a6a2a",
+                "stroke-width": "0.15",
+              }),
+            );
+            g.appendChild(
+              el("path", {
+                d: "M0.3,-6 Q0,-9.5 0,-10 Q-0.5,-8 0.3,-6",
+                fill: "#4a9a4a",
+                stroke: "#2a6a2a",
+                "stroke-width": "0.15",
+              }),
+            );
+            svg.appendChild(g);
+          }
+          const palmen = [
+            { x: 10, y: 65, s: 1.2 },
+            { x: 90, y: 42, s: 1.1 },
+            { x: 50, y: 14, s: 1.0 },
+            { x: 74, y: 30, s: 0.9 },
+            { x: 20, y: 40, s: 1.0 },
+            { x: 66, y: 78, s: 1.1 },
+            { x: 34, y: 72, s: 0.9 },
+            { x: 88, y: 88, s: 1.0 },
+          ];
+
+          // Ein kleines Piratenäffchen lugt gelegentlich hinter einer zufälligen Palme hervor.
+          // Die Äffchen werden zuerst gezeichnet, damit Stamm und Blätter sie teilweise verdecken.
+          const affen = palmen.map((p, index) => {
+            const g = el("g", {
+              transform: `translate(${p.x + 1.7}, ${p.y - 3.2}) scale(0.01)`,
+              opacity: "0",
+              "pointer-events": "none",
+              "data-piratenaffe": String(index),
+            });
+            g.appendChild(el("circle", { cx: -1.15, cy: -0.15, r: 1.05, fill: "#8b542e", stroke: "#56331f", "stroke-width": ".22" }));
+            g.appendChild(el("circle", { cx: 1.15, cy: -0.15, r: 1.05, fill: "#8b542e", stroke: "#56331f", "stroke-width": ".22" }));
+            g.appendChild(el("circle", { cx: 0, cy: 0, r: 1.55, fill: "#a96b3b", stroke: "#56331f", "stroke-width": ".25" }));
+            g.appendChild(el("ellipse", { cx: 0, cy: .55, rx: 1.02, ry: .78, fill: "#e5c18a" }));
+            g.appendChild(el("circle", { cx: -.48, cy: -.18, r: .18, fill: "#24170f" }));
+            g.appendChild(el("circle", { cx: .48, cy: -.18, r: .18, fill: "#24170f" }));
+            g.appendChild(el("path", { d: "M-.35,.72 Q0,.98 .38,.68", fill: "none", stroke: "#56331f", "stroke-width": ".18", "stroke-linecap": "round" }));
+            // Kleine schwarze Piratenkopfbinde mit goldenem Totenkopf-Punkt.
+            g.appendChild(el("path", { d: "M-1.35,-.72 Q0,-1.72 1.35,-.72 L1.18,-.25 Q0,-.72 -1.18,-.25 Z", fill: "#252b2c", stroke: "#171a1a", "stroke-width": ".16" }));
+            g.appendChild(el("circle", { cx: 0, cy: -1.0, r: .18, fill: "#f0d18a" }));
+            svg.appendChild(g);
+            return { group: g, palm: p };
+          });
+          palmen.forEach((p) => drawPalme(p.x, p.y, p.s));
+
+          if (window.piratenaffeTimer) clearInterval(window.piratenaffeTimer);
+          let sichtbarerAffe = null;
+          const affeZeigen = () => {
+            if (sichtbarerAffe) {
+              sichtbarerAffe.group.setAttribute("opacity", "0");
+              sichtbarerAffe.group.setAttribute("transform", `translate(${sichtbarerAffe.palm.x + 1.7}, ${sichtbarerAffe.palm.y - 3.2}) scale(0.01)`);
+            }
+            const kandidat = affen[Math.floor(Math.random() * affen.length)];
+            sichtbarerAffe = kandidat;
+            const groesse = 0.48 * kandidat.palm.s;
+            kandidat.group.setAttribute("opacity", "1");
+            kandidat.group.setAttribute("transform", `translate(${kandidat.palm.x + 1.7}, ${kandidat.palm.y - 3.2}) scale(${groesse})`);
+            // Kurz hervorlugen, dann wieder verschwinden.
+            setTimeout(() => {
+              if (sichtbarerAffe === kandidat) {
+                kandidat.group.setAttribute("transform", `translate(${kandidat.palm.x + 2.6}, ${kandidat.palm.y - 3.2}) scale(${groesse})`);
+              }
+            }, 650);
+            setTimeout(() => {
+              if (sichtbarerAffe === kandidat) {
+                kandidat.group.setAttribute("opacity", "0");
+                kandidat.group.setAttribute("transform", `translate(${kandidat.palm.x + 1.7}, ${kandidat.palm.y - 3.2}) scale(0.01)`);
+                sichtbarerAffe = null;
+              }
+            }, 2300);
+          };
+          // Erst nach einer kleinen Wartezeit, danach in unregelmäßigen Abständen.
+          setTimeout(affeZeigen, 3200 + Math.random() * 2500);
+          window.piratenaffeTimer = setInterval(affeZeigen, 8500 + Math.random() * 3500);
+          // Büsche
+          [
+            [5, 75, 1.2],
+            [8, 80, 1],
+            [92, 60, 1.1],
+            [95, 70, 0.9],
+            [45, 20, 1],
+            [55, 25, 0.9],
+            [80, 68, 1.1],
+            [28, 60, 0.9],
+          ].forEach((p) => {
+            const g = el("g", { transform: `translate(${p[0]}, ${p[1]}) scale(${p[2]})` });
+            g.appendChild(el("circle", { cx: 0, cy: 0, r: 1.4, fill: "#4a8a3a", opacity: "0.85" }));
+            g.appendChild(
+              el("circle", { cx: 1.2, cy: 0.3, r: 1.1, fill: "#3a7a2a", opacity: "0.85" }),
+            );
+            g.appendChild(
+              el("circle", { cx: -1.1, cy: 0.4, r: 1.0, fill: "#3a7a2a", opacity: "0.85" }),
+            );
+            svg.appendChild(g);
+          });
+        } else if (state.reise === "unterwasser") {
+          // Wellen (blau)
+          for (let i = 0; i < 6; i++) {
+            svg.appendChild(
+              el("path", {
+                d: `M${2 + i * 16},5 Q${6 + i * 16},3.5 ${10 + i * 16},5 T${18 + i * 16},5`,
+                fill: "none",
+                stroke: "#4a8aa8",
+                "stroke-width": "0.4",
+                opacity: "0.7",
+              }),
+            );
+            svg.appendChild(
+              el("path", {
+                d: `M${2 + i * 16},95 Q${6 + i * 16},93.5 ${10 + i * 16},95 T${18 + i * 16},95`,
+                fill: "none",
+                stroke: "#4a8aa8",
+                "stroke-width": "0.4",
+                opacity: "0.7",
+              }),
+            );
+          }
+          // Fische
+          function drawFisch(cx, cy, scale, color) {
+            const g = el("g", { transform: `translate(${cx}, ${cy}) scale(${scale})` });
+            g.appendChild(
+              el("ellipse", { cx: 0, cy: 0, rx: 3, ry: 1.5, fill: color, opacity: "0.7" }),
+            );
+            g.appendChild(
+              el("path", { d: "M-2.5,0 L-4,-1.5 L-4,1.5 Z", fill: color, opacity: "0.7" }),
+            );
+            g.appendChild(el("circle", { cx: 1.5, cy: -0.3, r: 0.3, fill: "#1a3a4a" }));
+            svg.appendChild(g);
+          }
+          drawFisch(10, 20, 1.2, "#f0a040");
+          drawFisch(88, 30, 1.1, "#40c0f0");
+          drawFisch(50, 10, 1.0, "#f06060");
+          drawFisch(75, 75, 1.1, "#f0d040");
+          drawFisch(20, 55, 1.0, "#a060f0");
+          // Seegras
+          function drawSeegras(cx, cy, scale) {
+            const g = el("g", { transform: `translate(${cx}, ${cy}) scale(${scale})` });
+            g.appendChild(
+              el("path", {
+                d: "M0,3 Q-1,1 -0.5,-2 Q0.5,-4 0,-7",
+                fill: "none",
+                stroke: "#2a8a4a",
+                "stroke-width": "0.6",
+                "stroke-linecap": "round",
+              }),
+            );
+            g.appendChild(
+              el("path", {
+                d: "M1.5,3 Q2.5,1 1.5,-2 Q0.5,-4 1.5,-6",
+                fill: "none",
+                stroke: "#3a9a5a",
+                "stroke-width": "0.5",
+                "stroke-linecap": "round",
+              }),
+            );
+            svg.appendChild(g);
+          }
+          [
+            [8, 88, 1.2],
+            [92, 88, 1.1],
+            [48, 92, 1],
+            [80, 20, 0.9],
+            [15, 40, 1.0],
+            [60, 75, 1.1],
+          ].forEach((p) => drawSeegras(p[0], p[1], p[2]));
+          // Muscheln
+          [
+            [88, 60],
+            [12, 70],
+            [70, 15],
+          ].forEach((p) => {
+            const g = el("g", { transform: `translate(${p[0]}, ${p[1]})` });
+            g.appendChild(
+              el("path", {
+                d: "M-2,0 Q0,-3 2,0 Z",
+                fill: "#f0b0c0",
+                opacity: "0.8",
+                stroke: "#a06070",
+                "stroke-width": "0.2",
+              }),
+            );
+            svg.appendChild(g);
+          });
+        } else if (state.reise === "weltraum") {
+          // Sterne
+          for (let i = 0; i < 30; i++) {
+            const x = Math.random() * 100,
+              y = Math.random() * 100;
+            const r = Math.random() * 0.6 + 0.2;
+            svg.appendChild(
+              el("circle", {
+                cx: x,
+                cy: y,
+                r: r,
+                fill: "#fff",
+                opacity: (Math.random() * 0.7 + 0.3).toString(),
+              }),
+            );
+          }
+          // Planeten
+          function drawPlanet(cx, cy, r, color, ring) {
+            const g = el("g", { transform: `translate(${cx}, ${cy})` });
+            g.appendChild(el("circle", { cx: 0, cy: 0, r: r, fill: color, opacity: "0.85" }));
+            if (ring) {
+              g.appendChild(
+                el("ellipse", {
+                  cx: 0,
+                  cy: 0,
+                  rx: r * 1.7,
+                  ry: r * 0.4,
+                  fill: "none",
+                  stroke: "#d0b0f0",
+                  "stroke-width": "0.3",
+                  opacity: "0.7",
+                  transform: "rotate(-20)",
+                }),
+              );
+            }
+            svg.appendChild(g);
+          }
+          drawPlanet(88, 20, 4, "#a060d0", true);
+          drawPlanet(12, 75, 3, "#60a0d0", false);
+          drawPlanet(75, 80, 2.5, "#d07040", false);
+          drawPlanet(25, 20, 2, "#d0d060", false);
+          // Rakete
+          const rak = el("g", { transform: "translate(50, 8)" });
+          rak.appendChild(
+            el("path", {
+              d: "M0,-5 L1.5,-1 L1.5,3 L-1.5,3 L-1.5,-1 Z",
+              fill: "#d0d0e0",
+              stroke: "#606080",
+              "stroke-width": "0.2",
+            }),
+          );
+          rak.appendChild(el("circle", { cx: 0, cy: -2, r: 0.7, fill: "#60a0f0" }));
+          rak.appendChild(el("path", { d: "M-1.5,3 L-2.5,5 L-1,4 Z", fill: "#f06040" }));
+          rak.appendChild(el("path", { d: "M1.5,3 L2.5,5 L1,4 Z", fill: "#f06040" }));
+          svg.appendChild(rak);
+        }
+
+        /* ---- Kompassrose (für alle) ---- */
+        const comp = el("g", { transform: "translate(13, 15) scale(0.68)" });
+        comp.appendChild(
+          el("circle", {
+            cx: 0,
+            cy: 0,
+            r: 5.5,
+            fill: "none",
+            stroke: "#5a3a18",
+            "stroke-width": "0.4",
+            opacity: "0.75",
+          }),
+        );
+        comp.appendChild(
+          el("circle", {
+            cx: 0,
+            cy: 0,
+            r: 3.8,
+            fill: "none",
+            stroke: "#5a3a18",
+            "stroke-width": "0.2",
+            opacity: "0.6",
+          }),
+        );
+        comp.appendChild(
+          el("path", {
+            d: "M0,-5.5 L1,-1 L5.5,0 L1,1 L0,5.5 L-1,1 L-5.5,0 L-1,-1 Z",
+            fill: "#5a3a18",
+            opacity: "0.8",
+          }),
+        );
+        comp.appendChild(
+          el("path", {
+            d: "M0,-3.8 L0.6,-0.6 L3.8,0 L0.6,0.6 L0,3.8 L-0.6,0.6 L-3.8,0 L-0.6,-0.6 Z",
+            fill: "#f2ddb0",
+          }),
+        );
+        ["N", "S", "O", "W"].forEach((dir, i) => {
+          const pos = [
+            [0, -6.6],
+            [0, 7.4],
+            [7.4, 0],
+            [-7.4, 0],
+          ][i];
+          const t = el("text", {
+            x: pos[0],
+            y: pos[1] + 1,
+            "text-anchor": "middle",
+            "font-size": "1.6",
+            "font-weight": "bold",
+            fill: "#5a3a18",
+          });
+          t.textContent = dir;
+          comp.appendChild(t);
+        });
+        svg.appendChild(comp);
+
+        /* ---- Titel-Banner ---- */
+        const bannerW = 38,
+          bannerX = 50 - bannerW / 2,
+          bannerY = 4;
+        svg.appendChild(
+          el("path", {
+            d: `M${bannerX} ${bannerY} L${bannerX + bannerW} ${bannerY} L${bannerX + bannerW - 2} ${bannerY + 5} L${bannerX + bannerW / 2} ${bannerY + 7} L${bannerX + 2} ${bannerY + 5} Z`,
+            fill: "#8a6030",
+            stroke: "#5a3a18",
+            "stroke-width": "0.3",
+          }),
+        );
+        const titel = el("text", {
+          x: 50,
+          y: bannerY + 4,
+          "text-anchor": "middle",
+          "font-size": "2.4",
+          "font-weight": "bold",
+          fill: "#ffe9b0",
+          "letter-spacing": "0.3",
+        });
+        titel.textContent = "SCHATZKARTE";
+        svg.appendChild(titel);
+
+        /* ---- X beim Ziel ---- */
+        const ziel = POSITIONEN[POSITIONEN.length - 1];
+        const xMark = el("text", {
+          x: ziel.x + 7,
+          y: ziel.y - 3,
+          "font-size": "4.5",
+          "text-anchor": "middle",
+          "font-weight": "bold",
+          fill: "#a02010",
+          opacity: "0.85",
+        });
+        xMark.textContent = "✕";
+        svg.appendChild(xMark);
+
+        /* ---- Durchgehender Schatzpfad: eine einzige Linie, die exakt durch
+           die Mitte jeder Truhe läuft (keine voneinander getrennten Kurven). ---- */
+        const routeD = POSITIONEN.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+        svg.appendChild(el("path", {
+          d: routeD,
+          fill: "none",
+          stroke: "#746c5a",
+          "stroke-width": "0.35",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-dasharray": "1.1 2.4",
+          opacity: ".78",
+        }));
+
+        /* ---- Truhen ---- */
+        const layer = document.getElementById("truhenLayer");
+        layer.innerHTML = "";
+        POSITIONEN.forEach((pos, i) => {
+          const el2 = document.createElement("div");
+          el2.className = "truhe-node";
+          el2.style.left = pos.x + "%";
+          el2.style.top = pos.y + "%";
+
+          const num = document.createElement("div");
+          num.className = "station-num";
+          num.textContent = i + 1;
+
+          if (i < state.station) {
+            el2.classList.add("done");
+          } else if (i === state.station) {
+            el2.classList.add("current");
+            el2.onclick = () => oeffneTruheOverlay(i);
+            el2.setAttribute("aria-label", `Schatztruhe ${i + 1} öffnen`);
+          } else {
+            el2.classList.add("locked");
+            el2.setAttribute("aria-label", `Schatztruhe ${i + 1}, noch gesperrt`);
+          }
+          el2.innerHTML = `<span class="chest-art"><i class="chest-lid"></i><i class="chest-body"></i><i class="chest-band"></i><i class="chest-lock">${i < state.station ? "★" : i === state.station ? "✦" : "•"}</i></span>`;
+          el2.appendChild(num);
+          layer.appendChild(el2);
+        });
+
+        speichern();
+      }
+
+      function speichern() {
+        localStorage.setItem("schatzinsel", JSON.stringify(state));
+      }
+
+      function oeffneTruheOverlay(index) {
+        if (index !== state.station) return;
+        const r = REISEN[state.reise] || REISEN.dschungel;
+        document.getElementById("truheBig").innerHTML = `<span class="chest-art chest-art-big"><i class="chest-lid"></i><i class="chest-body"></i><i class="chest-band"></i><i class="chest-lock">✦</i></span><span class="chest-theme-mark">${r.truheIcon}</span>`;
+        document.getElementById("truheBig").classList.remove("opening");
+        document.getElementById("overlayHint").textContent = "Tippe die Truhe an!";
+        document.getElementById("overlayHint").style.display = "block";
+        document.getElementById("truheOverlay").classList.add("active");
+      }
+
+      function closeOverlay() {
+        document.getElementById("truheOverlay").classList.remove("active");
+      }
+
+      function oeffneTruhe() {
+        const big = document.getElementById("truheBig");
+        if (big.classList.contains("opening")) return;
+        big.classList.add("opening");
+        document.getElementById("overlayHint").style.display = "none";
+        setTimeout(() => {
+          const pool = (REISEN[state.reise] || REISEN.dschungel).pool.filter(
+            (a) => a.stufe === state.stufe,
+          );
+          let kandidaten = pool.filter((a) => a.id !== state.letzteId);
+          if (kandidaten.length === 0) kandidaten = pool;
+          const aufgabe = kandidaten[Math.floor(Math.random() * kandidaten.length)];
+          state.aktuelleAufgabe = aufgabe;
+          state.letzteId = aufgabe.id;
+          closeOverlay();
+          zeigeAufgabe(aufgabe);
+        }, 550);
+      }
+
+      let timerIntervall = null;
+      let restSekunden = 0;
+      function zeitFuerAufgabe(a) {
+        // Jede Aufgabe bekommt dieselbe entspannte Zeitspanne.
+        return 120;
+      }
+      function starteTimer(a) {
+        clearInterval(timerIntervall);
+        restSekunden = 120;
+        const el = document.getElementById("taskTimer");
+        el.classList.remove("urgent");
+        el.textContent = "⏱️ 2:00 Minuten – ihr habt Zeit!";
+        timerIntervall = setInterval(() => {
+          restSekunden--;
+          if (restSekunden <= 15) el.classList.add("urgent");
+          if (restSekunden > 0) {
+            const min = Math.floor(restSekunden / 60);
+            const sek = String(restSekunden % 60).padStart(2, "0");
+            el.textContent = `⏱️ Noch ${min}:${sek} Minuten`;
+          } else {
+            clearInterval(timerIntervall);
+            el.textContent = "💛 Zeit ist um – ihr dürft euch einen Tipp holen oder in Ruhe weitermachen!";
+            zeigeTipp(true);
+          }
+        }, 1000);
+      }
+      function loesungFuer(a) {
+        if (a.antwort) return a.antwort;
+        const t = (a.sprechtext || "").toLowerCase();
+        if (a.kategorie === "raetsel") {
+          if (/miau|klettert gern/.test(t)) return "Eine Katze! 🐱";
+          if (/vier beine und bellt/.test(t)) return "Ein Hund! 🐶";
+          if (/leuchtet nachts/.test(t) && /himmel|dschungel/.test(t)) return "Der Mond oder die Sterne. 🌙⭐";
+          if (/aufmachen und wieder schließen|öffnen und schließen/.test(t)) return "Zum Beispiel eine Tür, eine Schachtel oder ein Buch. 🚪";
+          if (/quak/.test(t)) return "Ein Frosch! 🐸";
+          if (/fährst du auf der straße/.test(t)) return "Zum Beispiel ein Auto, Fahrrad oder Bus. 🚗";
+          if (/trinkst du/.test(t)) return "Wasser! 💧";
+          if (/scheint am tag/.test(t)) return "Die Sonne! ☀️";
+          if (/an die füße/.test(t)) return "Schuhe oder Socken! 👟";
+          if (/wenn du müde bist/.test(t)) return "Du ruhst dich aus oder schläfst. 😴";
+          if (/vier beine, aber kann nicht laufen/.test(t)) return "Ein Tisch oder ein Stuhl. 🪑";
+          if (/nass, wenn es trocknet/.test(t)) return "Ein Handtuch! 🧺";
+          if (/zähne, aber keinen mund/.test(t)) return "Ein Kamm! 💇";
+          if (/rund, aber keine kugel/.test(t)) return "Zum Beispiel ein Teller oder eine Münze. 🍽️";
+          if (/fliegt ohne flügel/.test(t)) return "Die Zeit – oder ein Drachen im Wind, je nach Rätsel! 💨";
+          if (/einen kopf, aber kein gesicht/.test(t)) return "Ein Nagel oder ein Kohlkopf. 🔩";
+          if (/geht hoch, aber nie runter/.test(t)) return "Dein Alter! 🎂";
+          if (/blätter, aber keinen baum/.test(t)) return "Ein Buch! 📖";
+          if (/ein auge, aber sieht nicht/.test(t)) return "Eine Nadel. 🪡";
+          if (/einen hals, aber keinen kopf/.test(t)) return "Eine Flasche! 🍼";
+        }
+        if (/welche farbe hat eine banane/.test(t)) return "Meistens gelb! 🍌";
+        if (/welche farbe hat gras/.test(t)) return "Grün! 🌿";
+        if (/blau und gelb mischt/.test(t)) return "Grün! 💚";
+        if (/form hat ein würfel/.test(t)) return "Ein Würfel ist ein Körper mit sechs quadratischen Seiten. 🧊";
+        if (/form hat ein ball/.test(t)) return "Rund – wie eine Kugel! ⚽";
+        return "Tipp: Schau dich gemeinsam mit deinem Team um. Es gibt nicht nur eine richtige Lösung – erklärt, warum eure Idee passt! 🤝";
+      }
+      function nichtGeschafft() {
+        clearInterval(timerIntervall);
+        const a = state.aktuelleAufgabe;
+        if (!a) return;
+        const box = document.getElementById("taskHelp");
+        box.style.display = "block";
+        const loesung = loesungFuer(a);
+        box.textContent = "🙈 Kein Problem! Die Antwort ist: " + loesung;
+        document.getElementById("taskTimer").textContent = "💛 Ihr könnt die Antwort in Ruhe anschauen und danach auf „Geschafft“ tippen.";
+        document.getElementById("taskTimer").classList.remove("urgent");
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance("Kein Problem! Die Antwort ist: " + loesung);
+          if (!gewaehlteStimme) waehleBesteStimme();
+          if (gewaehlteStimme) u.voice = gewaehlteStimme;
+          u.lang = "de-DE"; u.rate = 0.86; window.speechSynthesis.speak(u);
+        }
+      }
+
+      function zeigeTipp(automatisch = false) {
+        const a = state.aktuelleAufgabe;
+        if (!a) return;
+        const box = document.getElementById("taskHelp");
+        box.style.display = "block";
+        const loesung = loesungFuer(a);
+        box.textContent = (automatisch ? "⏰ Zeit um! " : "💡 ") + loesung;
+        if (automatisch && "speechSynthesis" in window) {
+          const u = new SpeechSynthesisUtterance(loesung);
+          if (!gewaehlteStimme) waehleBesteStimme();
+          if (gewaehlteStimme) u.voice = gewaehlteStimme;
+          u.lang = "de-DE"; u.rate = 0.86; window.speechSynthesis.speak(u);
+        }
+      }
+      function zeigeAufgabe(a) {
+        document.getElementById("taskIcon").textContent = a.icon;
+        document.getElementById("taskText").textContent = a.sprechtext;
+        document.getElementById("taskHelp").style.display = "none";
+        document.getElementById("taskHelp").textContent = "";
+        zeige("screen-task");
+        starteTimer(a);
+        setTimeout(vorlesen, 350);
+      }
+
+      function nochMal() {
+        vorlesen();
+      }
+
+      function erledigt() {
+        clearInterval(timerIntervall);
+        const a = state.aktuelleAufgabe;
+        if (!a) return;
+        state.sterne = Math.min(state.sterne + 1, STATIONEN);
+        if (a.teamStern) state.teamSterne++;
+        state.station = Math.min(state.station + 1, STATIONEN);
+        const txt = document.getElementById("rewardText");
+        const sub = document.getElementById("rewardSub");
+        if (a.teamStern) {
+          txt.textContent = "Super gemacht! ⭐ + 🤝⭐";
+          sub.textContent = "Du bekommst einen Stern UND einen Team-Stern!";
+        } else {
+          txt.textContent = "Super gemacht! ⭐";
+          sub.textContent = "Dein Stern wandert auf die Schatzkarte!";
+        }
+        speichern();
+        zeige("screen-reward");
+        konfetti();
+        if (state.station >= STATIONEN) {
+          setTimeout(() => {
+            const r = REISEN[state.reise] || REISEN.dschungel;
+            document.getElementById("finaleIcon").textContent = r.finaleIcon;
+            document.getElementById("finaleTitle").textContent = r.name + " geschafft!";
+            zeige("screen-finale");
+          }, 1800);
+        }
+      }
+
+      function konfetti() {
+        const app = document.getElementById("app");
+        for (let i = 0; i < 14; i++) {
+          const c = document.createElement("div");
+          c.className = "confetti";
+          c.textContent = ["⭐", "✨", "🤝", "🎉", "💫"][Math.floor(Math.random() * 5)];
+          c.style.left = 10 + Math.random() * 80 + "%";
+          c.style.top = "-40px";
+          c.style.animationDelay = Math.random() * 0.4 + "s";
+          app.appendChild(c);
+          setTimeout(() => c.remove(), 2200);
+        }
+      }
+
+      function neueReise() {
+        clearInterval(timerIntervall);
+        const idx = REIHENFOLGE.indexOf(state.reise);
+        state.reise = idx < REIHENFOLGE.length - 1 ? REIHENFOLGE[idx + 1] : REIHENFOLGE[0];
+        state.station = 0;
+        state.sterne = 0;
+        state.teamSterne = 0;
+        state.aktuelleAufgabe = null;
+        state.letzteId = null;
+        speichern();
+        renderMap();
+        zeige("screen-map");
+      }
+
+      function resetGame() {
+        if (confirm("Möchtest du wirklich neu starten? Der Fortschritt wird gelöscht.")) {
+          state = {
+            stufe: state.stufe,
+            reise: state.reise,
+            station: 0,
+            sterne: 0,
+            teamSterne: 0,
+            aktuelleAufgabe: null,
+            letzteId: null,
+          };
+          speichern();
+          renderMap();
+          zeige("screen-map");
+        }
+      }
+    </script>
+  </body>
+</html>
