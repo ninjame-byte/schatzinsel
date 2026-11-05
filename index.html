@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>🏴‍☠️ Schatzinsel</title>
+    <meta name="theme-color" content="#17383f" />
+    <meta name="application-name" content="Schatzinsel" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="res/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="res/icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="res/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="screen active center" id="screen-start">
+        <div class="start-bg"></div>
+        <div class="start-content">
+          <div class="logo">🏴‍☠️</div>
+          <h1>Schatzinsel</h1>
+          <p class="sub">Wähle die passende Altersgruppe</p>
+          <div class="crew-row">
+            <button class="crew-btn" onclick="startGame('klein')" aria-label="Altersgruppe 2 bis 3 Jahre">
+              <svg
+                class="crew-fig"
+                viewBox="0 0 200 220"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+                aria-label="Altersgruppe 2 bis 3 Jahre"
+              >
+                <ellipse cx="100" cy="180" rx="46" ry="34" fill="#8a5a2b" />
+                <ellipse cx="100" cy="182" rx="34" ry="26" fill="#c98a4a" />
+                <ellipse cx="78" cy="212" rx="14" ry="9" fill="#6a3f1a" />
+                <ellipse cx="122" cy="212" rx="14" ry="9" fill="#6a3f1a" />
+                <path d="M68 168 Q100 182 132 168 L128 198 Q100 206 72 198 Z" fill="#4f9b62" />
+                <path d="M100 168 L100 198" stroke="#347248" stroke-width="2" />
+                <ellipse
+                  cx="58"
+                  cy="172"
+                  rx="12"
+                  ry="20"
+                  fill="#8a5a2b"
+                  transform="rotate(-20 58 172)"
+                />
+                <ellipse
+                  cx="142"
+                  cy="172"
+                  rx="12"
+                  ry="20"
+                  fill="#8a5a2b"
+                  transform="rotate(20 142 172)"
+                />
+                <circle cx="100" cy="120" r="46" fill="#a06a35" />
+                <circle cx="56" cy="118" r="16" fill="#8a5a2b" />
+                <circle cx="144" cy="118" r="16" fill="#8a5a2b" />
+                <circle cx="56" cy="118" r="9" fill="#d9a06a" />
+                <circle cx="144" cy="118" r="9" fill="#d9a06a" />
+                <ellipse cx="100" cy="132" rx="26" ry="20" fill="#e8bf8a" />
+                <circle cx="86" cy="112" r="5.5" fill="#2a1a0a" />
+                <circle cx="114" cy="112" r="5.5" fill="#2a1a0a" />
+                <circle cx="87.5" cy="110.5" r="1.7" fill="#fff" />
+                <circle cx="115.5" cy="110.5" r="1.7" fill="#fff" />
+                <ellipse cx="100" cy="126" rx="4" ry="3" fill="#6a3f1a" />
+                <path
+                  d="M88 137 Q100 147 112 137"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M67 88 Q75 69 89 78 Q99 61 110 77 Q126 67 135 88 Q120 82 109 88 Q91 81 67 88Z"
+                  fill="#70401f"
+                />
+                <path
+                  d="M77 91 Q88 82 99 89 M105 88 Q116 82 126 91"
+                  stroke="#8b552c"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="crew-label">2–3 Jahre</span>
+            </button>
+            <button class="crew-btn" onclick="startGame('mittel')" aria-label="Altersgruppe 3 bis 4 Jahre">
+              <svg class="crew-fig" viewBox="0 0 220 240" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="110" cy="196" rx="52" ry="38" fill="#8a5a2b" />
+                <ellipse cx="110" cy="198" rx="38" ry="28" fill="#c98a4a" />
+                <ellipse cx="86" cy="230" rx="15" ry="10" fill="#6a3f1a" />
+                <ellipse cx="134" cy="230" rx="15" ry="10" fill="#6a3f1a" />
+                <path d="M74 182 Q110 198 146 182 L142 216 Q110 224 78 216 Z" fill="#3a6a9a" />
+                <path
+                  d="M82 190 L82 216 M98 194 L98 220 M114 194 L114 220 M130 190 L130 216"
+                  stroke="#2a4a6a"
+                  stroke-width="2"
+                />
+                <rect x="76" y="208" width="68" height="8" rx="3" fill="#5a3010" />
+                <rect x="104" y="206" width="12" height="12" rx="2" fill="#d9a020" />
+                <ellipse
+                  cx="64"
+                  cy="188"
+                  rx="13"
+                  ry="22"
+                  fill="#8a5a2b"
+                  transform="rotate(-20 64 188)"
+                />
+                <ellipse
+                  cx="156"
+                  cy="188"
+                  rx="13"
+                  ry="22"
+                  fill="#8a5a2b"
+                  transform="rotate(20 156 188)"
+                />
+                <circle cx="110" cy="132" r="52" fill="#a06a35" />
+                <circle cx="62" cy="130" r="17" fill="#8a5a2b" />
+                <circle cx="158" cy="130" r="17" fill="#8a5a2b" />
+                <circle cx="62" cy="130" r="10" fill="#d9a06a" />
+                <circle cx="158" cy="130" r="10" fill="#d9a06a" />
+                <ellipse cx="110" cy="146" rx="30" ry="23" fill="#e8bf8a" />
+                <circle cx="94" cy="124" r="6" fill="#2a1a0a" />
+                <circle cx="126" cy="124" r="6" fill="#2a1a0a" />
+                <circle cx="96" cy="122" r="2" fill="#fff" />
+                <circle cx="128" cy="122" r="2" fill="#fff" />
+                <path
+                  d="M86 114 Q94 110 102 114"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M118 114 Q126 110 134 114"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <ellipse cx="110" cy="140" rx="5" ry="3.5" fill="#6a3f1a" />
+                <path
+                  d="M98 152 Q110 160 122 152"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path d="M50 106 Q110 58 170 106 L162 98 Q110 50 58 98 Z" fill="#1a1a1a" />
+                <path d="M50 106 Q110 98 170 106 L170 116 Q110 108 50 116 Z" fill="#1a1a1a" />
+                <path d="M58 112 Q110 104 162 112 L158 106 Q110 98 62 106 Z" fill="#333" />
+                <path d="M158 108 Q172 92 178 74 Q170 84 160 100 Z" fill="#d94f4f" />
+                <circle cx="110" cy="94" r="8" fill="#f0e6d0" />
+                <circle cx="106.5" cy="93" r="1.8" fill="#1a1a1a" />
+                <circle cx="113.5" cy="93" r="1.8" fill="#1a1a1a" />
+                <path d="M106 99 L114 99" stroke="#1a1a1a" stroke-width="1.4" />
+                <path d="M84 118 Q94 110 104 118 Q94 128 84 118 Z" fill="#1a1a1a" />
+                <path d="M84 118 Q60 108 48 96" stroke="#1a1a1a" stroke-width="2.5" fill="none" />
+              </svg>
+              <span class="crew-label">3–4 Jahre</span>
+            </button>
+            <button class="crew-btn" onclick="startGame('gross')" aria-label="Altersgruppe 3 bis 4 Jahre">
+              <svg class="crew-fig" viewBox="0 0 220 240" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="110" cy="196" rx="52" ry="38" fill="#8a5a2b" />
+                <ellipse cx="110" cy="198" rx="38" ry="28" fill="#c98a4a" />
+                <ellipse cx="86" cy="230" rx="15" ry="10" fill="#6a3f1a" />
+                <ellipse cx="134" cy="230" rx="15" ry="10" fill="#6a3f1a" />
+                <path d="M74 182 Q110 198 146 182 L142 216 Q110 224 78 216 Z" fill="#3a6a9a" />
+                <path
+                  d="M82 190 L82 216 M98 194 L98 220 M114 194 L114 220 M130 190 L130 216"
+                  stroke="#2a4a6a"
+                  stroke-width="2"
+                />
+                <rect x="76" y="208" width="68" height="8" rx="3" fill="#5a3010" />
+                <rect x="104" y="206" width="12" height="12" rx="2" fill="#d9a020" />
+                <ellipse
+                  cx="64"
+                  cy="188"
+                  rx="13"
+                  ry="22"
+                  fill="#8a5a2b"
+                  transform="rotate(-20 64 188)"
+                />
+                <ellipse
+                  cx="156"
+                  cy="188"
+                  rx="13"
+                  ry="22"
+                  fill="#8a5a2b"
+                  transform="rotate(20 156 188)"
+                />
+                <circle cx="110" cy="132" r="52" fill="#a06a35" />
+                <circle cx="62" cy="130" r="17" fill="#8a5a2b" />
+                <circle cx="158" cy="130" r="17" fill="#8a5a2b" />
+                <circle cx="62" cy="130" r="10" fill="#d9a06a" />
+                <circle cx="158" cy="130" r="10" fill="#d9a06a" />
+                <ellipse cx="110" cy="146" rx="30" ry="23" fill="#e8bf8a" />
+                <circle cx="94" cy="124" r="6" fill="#2a1a0a" />
+                <circle cx="126" cy="124" r="6" fill="#2a1a0a" />
+                <circle cx="96" cy="122" r="2" fill="#fff" />
+                <circle cx="128" cy="122" r="2" fill="#fff" />
+                <path
+                  d="M86 114 Q94 110 102 114"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M118 114 Q126 110 134 114"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <ellipse cx="110" cy="140" rx="5" ry="3.5" fill="#6a3f1a" />
+                <path
+                  d="M98 152 Q110 160 122 152"
+                  stroke="#5a3010"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path d="M50 106 Q110 58 170 106 L162 98 Q110 50 58 98 Z" fill="#1a1a1a" />
+                <path d="M50 106 Q110 98 170 106 L170 116 Q110 108 50 116 Z" fill="#1a1a1a" />
+                <path d="M58 112 Q110 104 162 112 L158 106 Q110 98 62 106 Z" fill="#333" />
+                <path d="M158 108 Q172 92 178 74 Q170 84 160 100 Z" fill="#d94f4f" />
+                <circle cx="110" cy="94" r="8" fill="#f0e6d0" />
+                <circle cx="106.5" cy="93" r="1.8" fill="#1a1a1a" />
+                <circle cx="113.5" cy="93" r="1.8" fill="#1a1a1a" />
+                <path d="M106 99 L114 99" stroke="#1a1a1a" stroke-width="1.4" />
+                <path d="M84 118 Q94 110 104 118 Q94 128 84 118 Z" fill="#1a1a1a" />
+                <path d="M84 118 Q60 108 48 96" stroke="#1a1a1a" stroke-width="2.5" fill="none" />
+              </svg>
+              <span class="crew-label">4–5 Jahre</span>
+            </button>
+          </div>
+          <button class="btn-small pwa-install" id="pwaInstall" type="button" hidden>📲 Schatzinsel installieren</button>
+          <p class="hint">🤝 Kein Verlieren – nur gemeinsam gewinnen<br>Jede Aufgabe kommt nur einmal vor.</p>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-map">
+        <div class="map-header">
+          <div class="pill reise-pill" id="reisePill">🐒 Dschungel</div>
+          <div class="pill">⭐ <span id="starCount">0</span>/12</div>
+          <div class="pill">🤝⭐ <span id="teamCount">0</span></div>
+          <div class="pill icon-only" onclick="resetGame()" title="Neu starten">🔄</div>
+        </div>
+        <div class="map-wrap">
+          <div class="pergament">
+            <div class="pergament-inner" id="pergamentInner">
+              <svg
+                class="map-svg"
+                id="mapSvg"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              ></svg>
+            </div>
+            <div id="truhenLayer"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="truheOverlay">
+        <div class="truhe-big" id="truheBig" onclick="oeffneTruhe()"></div>
+        <p class="overlay-text" id="overlayHint">Tippe die Truhe an!</p>
+      </div>
+
+      <div class="screen" id="screen-task">
+        <div class="task-header">
+          <div class="pill icon-only" onclick="goMap()" title="Zur Schatzkarte">⬅️</div>
+          <button class="pill icon-only" type="button" onclick="goMainMenu()" title="Zurück ins Hauptmenü" aria-label="Zurück ins Hauptmenü">🏠</button>
+          <div class="pill">⭐ <span id="starCount2">0</span>/12</div>
+          <div class="pill icon-only" onclick="vorlesen()">🔊</div>
+          <div class="pill icon-only" onclick="stimmeWechseln()" title="Stimme wechseln">🎙️</div>
+        </div>
+        <div class="task-card">
+          <div class="task-icon" id="taskIcon">🔎</div>
+          <div class="task-text" id="taskText">…</div>
+          <button class="btn btn-listen" onclick="vorlesen()">🔊 Aufgabe vorlesen</button>
+          <div class="task-help" id="taskHelp" aria-live="polite"></div>
+        </div>
+        <div class="task-timer" id="taskTimer">⏱️ Bereit?</div>
+        <div class="task-buttons">
+          <button class="btn-small" onclick="nochMal()">🔁 Noch mal</button>
+          <button class="btn-small" onclick="zeigeTipp()">💡 Tipp / Lösung</button>
+          <button class="btn-small" onclick="nichtGeschafft()">
+            🙈 Nicht geschafft
+          </button>
+          <button class="btn-small" onclick="erledigt()">✅ Geschafft</button>
+        </div>
+      </div>
+
+      <div class="screen center" id="screen-reward">
+        <div class="reward-star">⭐</div>\n        <div style="font-size:68px;margin:4px 0" aria-label="Freudiger Pirat">🐒🏴‍☠️🎉</div>
+        <div class="reward-title" id="rewardText">Super gemacht!</div>
+        <p class="reward-sub" id="rewardSub">Dein Stern wandert auf die Schatzkarte!</p>
+        <button class="btn btn-done" style="padding: 16px 34px" onclick="goMap()">
+          ➡️ Weiter zur Karte
+        </button>
+      </div>
+
+      <div class="screen center" id="screen-finale">
+        <div class="finale-gem" id="finaleIcon">💎</div>
+        <div class="finale-title" id="finaleTitle">SCHATZ!</div>
+        <p class="reward-sub" id="finaleSub">
+          Du hast den Schatz gefunden – gemeinsam mit deinem Team!
+        </p>
+        <button class="btn btn-done" style="padding: 16px 34px" onclick="neueReise()">
+          🔁 Neue Reise starten
+        </button>
+      </div>
+
+      <div class="screen" id="screen-review">
+        <div class="review-wrap">
+          <div class="task-header">
+            <button class="btn-small" onclick="closeReview()">⬅️ Zur Startseite</button>
+            <div class="pill">📋 Fachprüfung</div>
+          </div>
+          <div class="review-progress" id="reviewProgress">Aufgabe 1</div>
+          <div class="review-panel">
+            <h2>Prüfauftrag für pädagogische Fachkräfte</h2>
+            <p>Prüfen Sie jede Aufgabe einzeln im Hinblick auf Entwicklungsangemessenheit, Verständlichkeit, Sicherheit und Inklusion. Die Einordnung ist eine fachliche Arbeitshilfe und keine bereits erteilte pädagogische Freigabe.</p>
+            <p class="review-note">Bewertung: „Geprüft“ nur wählen, wenn alle relevanten Kriterien erfüllt sind. Bei Anpassungsbedarf „Überarbeiten“ wählen und eine konkrete Notiz hinterlassen. Die neuen Aufgaben sind altersorientiert vorbereitet; eine pädagogische Freigabe erfolgt erst durch die Prüfung vor Ort.</p>
+            <label for="reviewerName"><b>Name der prüfenden Fachkraft</b></label>
+            <input id="reviewerName" class="review-field" placeholder="Name / Qualifikation" oninput="saveReviewMeta()">
+            <label for="reviewInstitution"><b>Einrichtung / Gruppe</b></label>
+            <input id="reviewInstitution" class="review-field" placeholder="Einrichtung oder Gruppe" oninput="saveReviewMeta()">
+            <label for="reviewDate"><b>Prüfdatum</b></label>
+            <input id="reviewDate" type="date" class="review-field" onchange="saveReviewMeta()">
+            <label for="reviewFilter"><b>Aufgabengruppe filtern</b></label>
+            <select id="reviewFilter" class="review-field" onchange="changeReviewFilter()">
+              <option value="alle">Alle Aufgaben</option>
+              <option value="klein">Einzelaufgaben 2–3 Jahre</option>
+              <option value="mittel">Einzelaufgaben 3–4 Jahre</option>
+              <option value="gross">Einzelaufgaben 4–5 Jahre</option>
+              <option value="team-klein">Teamaufgaben 2–3 Jahre</option>
+              <option value="team-mittel">Teamaufgaben 3–4 Jahre</option>
+              <option value="team-gross">Teamaufgaben 4–5 Jahre</option>
+            </select>
+            <div id="reviewSummary"></div>
+          </div>
+          <div class="review-panel" id="reviewTaskPanel">
+            <h2 id="reviewTaskTitle">Aufgabe</h2>
+            <p id="reviewTaskMeta"></p>
+            <p><b>Aufgabenstellung</b></p><p id="reviewTaskText"></p>
+            <p><b>Vorgeschlagener Tipp</b></p><p id="reviewTaskHint"></p>
+            <p><b>Vorgeschlagene Antwort / Beobachtbares Ergebnis</b></p><p id="reviewTaskAnswer"></p>
+            <hr style="border:0;border-top:1px solid #b99b6d;margin:12px 0">
+            <h3>Prüfkriterien – bitte einzeln bewerten</h3>
+            <div id="reviewCriteria"></div>
+            <label for="reviewStatus"><b>Fachliches Prüfergebnis</b></label>
+            <select id="reviewStatus" class="review-field" onchange="saveReviewEntry()">
+              <option value="offen">Noch nicht geprüft</option>
+              <option value="geprueft">Geprüft – kann so eingesetzt werden</option>
+              <option value="ueberarbeiten">Überarbeiten – noch nicht einsetzen</option>
+              <option value="rueckfrage">Rückfrage / Praxistest erforderlich</option>
+            </select>
+            <label for="reviewNotes"><b>Fachliche Anmerkungen / konkrete Änderungsvorschläge</b></label>
+            <textarea id="reviewNotes" class="review-field" rows="4" placeholder="z. B. Formulierung vereinfachen, Material austauschen, Hilfestellung ergänzen …" oninput="saveReviewEntry()"></textarea>
+            <p class="review-note">Die Aufgaben sind altersorientiert vorbereitet, aber nicht offiziell pädagogisch zertifiziert. Die Kriterien dienen als Prüfraster. Bitte berücksichtigen Sie die individuellen Fähigkeiten und Bedürfnisse der Kinder sowie die tatsächliche Gruppensituation.</p>
+          </div>
+          <div class="review-nav">
+            <button class="btn-small" onclick="moveReview(-1)">⬅️ Zurück</button>
+            <button class="btn-small" onclick="moveReview(1)">Weiter ➡️</button>
+          </div>
+          <div class="review-actions">
+            <button class="btn-small" onclick="downloadReview()">⬇️ Prüfergebnisse exportieren</button>
+            <button class="btn-small" onclick="printReview()">🖨️ Prüfübersicht drucken</button>
+          </div>
+          <p class="review-note" style="color:#ffe9b0;text-align:center">Prüfstände und Notizen werden lokal in diesem Browser gespeichert. Exportieren Sie die Ergebnisse zur Dokumentation und Weitergabe.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="errorBox"></div>
+
+    <script defer src="res/aufgaben-dschungel.js"></script>
+    <script defer src="res/aufgaben-unterwasser.js"></script>
+    <script defer src="res/aufgaben-weltraum.js"></script>
+    <script defer src="res/karte-dschungel.js"></script>
+    <script defer src="res/karte-unterwasser.js"></script>
+    <script defer src="res/karte-weltraum.js"></script>
+    <script defer src="res/karte.js"></script>
+    <script defer src="res/app.js"></script>
+    <script defer src="res/pwa.js"></script>
+  </body>
+</html>

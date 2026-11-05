@@ -1,0 +1,67 @@
+/* Kartentest: separate Testoberfläche; das Spiel-CSS bleibt unverändert. */
+html, body.kartentest-page { height: auto; min-height: 100%; overflow: auto; }
+body.kartentest-page { display: block; margin: 0; background: #101e26; color: #f3ebd7; }
+.kartentest-layout { display: grid; grid-template-columns: minmax(280px, 350px) minmax(350px, 1fr); gap: 25px; align-items: start; max-width: 1190px; padding: 28px; margin: 0 auto; }
+.kartentest-controls { background: #182b32; border: 1px solid #577078; border-radius: 18px; padding: 24px; box-shadow: 0 12px 30px #0004; }
+.kartentest-controls h1 { font-size: 32px; margin: 0 0 10px; background: none; color: #f9d58b; filter: none; }
+.test-eyebrow { color: #9bd9ca; font-size: 12px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
+.test-intro { line-height: 1.55; color: #c7d6d4; font-size: 14px; margin-bottom: 24px; }
+.kartentest-controls fieldset { border: 0; border-top: 1px solid #496269; padding: 18px 0 17px; min-width: 0; }
+.kartentest-controls legend { font-size: 15px; font-weight: 800; padding: 0 0 0; margin-bottom: 10px; color: #fae4b6; }
+.kartentest-controls label { display: block; font-size: 14px; margin: 8px 0; color: #dcebe7; }
+.test-themes { display: grid; grid-template-columns: 1fr; gap: 9px; }
+.kartentest-controls button, .kartentest-controls select, .kartentest-controls input[type=number] { border: 1px solid #6a817d; background: #263f44; color: #f9efd5; border-radius: 9px; font: inherit; padding: 10px 11px; }
+.kartentest-controls select, .kartentest-controls input[type=number] { width: 100%; }
+.kartentest-controls button { cursor: pointer; font-size: 14px; font-weight: 700; }
+.kartentest-controls button:hover { border-color: #f1c978; }
+.kartentest-controls button:focus-visible, .kartentest-controls select:focus-visible, .kartentest-controls input:focus-visible { outline: 3px solid #e6c873; outline-offset: 2px; }
+.kartentest-controls button.active { background: #4e6e4e; border-color: #a8dc89; color: #fff7cf; }
+.kartentest-controls input[type=range] { width: 100%; accent-color: #eac575; cursor: pointer; margin: 12px 0 4px; }
+.test-steps { display: flex; justify-content: space-between; color: #a7c4bd; font-size: 12px; margin-bottom: 17px; }
+.test-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.test-actions button { flex: 1; min-width: 92px; }
+.kartentest-controls .test-check { display: flex; align-items: center; gap: 9px; cursor: pointer; margin: 12px 0; }
+.test-check input { accent-color: #eac575; width: 17px; height: 17px; }
+.kartentest-controls .test-redraw { width: 100%; margin-top: 6px; background: #73502c; border-color: #b78e50; }
+.test-status { border: 1px solid #4f736b; border-radius: 9px; background: #25413e; color: #d5f3df; padding: 11px 13px; line-height: 1.35; font-size: 13px; }
+.test-footer { font-size: 13px; color: #aac5bd; line-height: 1.6; margin-top: 18px; }
+.test-footer a { color: #ffe0a0; }
+.kartentest-preview { min-width: 0; max-width: 740px; width: 100%; margin: 0 auto; }
+.test-preview-top { display:flex; align-items:center; justify-content:space-between; margin-bottom: 11px; color: #c9d5d4; font-size: 12px; letter-spacing: 1px; }
+.test-preview-top strong { font-size: 16px; color: #fff0b5; letter-spacing: normal; }
+.kartentest-preview #app { width: 100%; max-width: none; height: min(83vh, 820px); min-height: 520px; border: 1px solid #54717a; border-radius: 12px; box-shadow: 0 20px 40px #0007; }
+.kartentest-preview .map-wrap { padding-top: 82px; }
+.test-preview-note { margin: 12px 0; color: #acc0c3; font-size: 13px; line-height: 1.5; }
+.test-grid-layer { display: none; position: absolute; inset: 0; height:100%; width:100%; pointer-events:none; z-index: 4; }
+.test-grid-layer.visible { display: block; }
+.kartentest-page #truhenLayer.hidden-chests { visibility: hidden; }
+@media(max-width: 850px) {
+  .kartentest-layout { grid-template-columns: 1fr; padding: 15px; gap: 19px; }
+  .kartentest-controls { padding: 19px; }
+  .test-themes { grid-template-columns: repeat(3, 1fr); }
+  .test-themes button { padding: 9px 4px; font-size: 12px; }
+  .kartentest-preview #app { height: min(calc(100vw * 1.25), 680px); min-height: 440px; }
+}
+@media (max-width: 420px) { .kartentest-preview #app { min-height: 480px; } .kartentest-layout { padding: 9px; } .kartentest-controls { padding: 16px; } }
+
+/* v3: spielbare Aufgabenansicht innerhalb der Karten-Vorschau */
+.kartentest-controls .test-play-now { width: 100%; flex-basis: 100%; background: #38683d; border-color: #a4cf87; color: #fff7dc; }
+.kartentest-controls .test-play-now:disabled { cursor: not-allowed; opacity: .5; }
+.test-play-layer[hidden], .test-play-hint[hidden], #testTaskView[hidden], #testRewardView[hidden], #testFinalView[hidden] { display: none !important; }
+.test-play-layer { position: absolute; inset: 0; z-index: 85; background: rgba(7, 21, 24, .84); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 14px; }
+.test-play-card { width: min(100%, 540px); max-height: 100%; overflow-y: auto; border: 2px solid #a4834a; border-radius: 20px; background: linear-gradient(165deg, #f5e1b9, #dfbe7e); padding: clamp(16px, 3.5vw, 26px); color: #382609; box-shadow: 0 22px 60px #0009; text-align: center; }
+.test-play-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 800; color: #725124; }
+.test-play-top button { cursor: pointer; border: 1px solid #84622d; background: #ecd39f; color: #513516; border-radius: 10px; min-width: 40px; min-height: 40px; font: inherit; font-size: 20px; }
+.test-play-icon { font-size: clamp(52px, 8vw, 74px); margin: 8px 0; }
+.test-play-card h2 { font-size: clamp(22px, 4vw, 28px); margin: 4px 0 12px; color: #54320d; }
+.test-play-text { font-size: clamp(18px, 3.6vw, 24px); font-weight: 750; line-height: 1.38; margin: 14px 0 18px; }
+.test-play-hint { background: #fff8e9; color: #473013; padding: 13px; border: 1px solid #b6925b; border-radius: 12px; line-height: 1.55; text-align: left; margin: 12px 0; font-size: 15px; }
+.test-play-hint p { margin: 7px 0; }
+.test-play-actions { display: flex; gap: 9px; align-items: stretch; justify-content: center; flex-wrap: wrap; margin-top: 13px; }
+.test-play-actions button, .test-play-result button { cursor: pointer; background: #76512b; color: #fff7e1; border-radius: 12px; border: 1px solid #4f3419; padding: 12px 13px; font: inherit; font-size: 14px; font-weight: 750; min-height: 44px; flex: 1 1 42%; }
+.test-play-actions .test-play-success, .test-play-result .test-play-success { background: #367744; color: white; border-color: #22542e; }
+.test-play-result { padding: 10px 0; }
+.test-play-result p { line-height: 1.5; font-size: 17px; margin: 12px 0 18px; }
+.test-play-result button { margin-top: 9px; }
+.test-play-card button:focus-visible { outline: 3px solid #166c95; outline-offset: 3px; }
+@media (max-width: 600px) { .test-play-layer { padding: 7px; } .test-play-card { padding: 12px; border-radius: 14px; } .test-play-icon { font-size: 48px; margin: 3px 0; } .test-play-text { font-size: 18px; margin: 10px 0; } .test-play-actions button { padding: 10px 8px; font-size: 13px; } }

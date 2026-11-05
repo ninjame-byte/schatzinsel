@@ -1,0 +1,17 @@
+{
+  "name": "Schatzinsel – Gemeinsam auf Schatzsuche",
+  "short_name": "Schatzinsel",
+  "description": "Interaktives Schatzinsel-Spiel mit Aufgaben für Kinder im Alter von 2 bis 5 Jahren.",
+  "lang": "de-DE",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#09151a",
+  "theme_color": "#17383f",
+  "icons": [
+    { "src": "res/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "res/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Schatzinsel v3 · Spielbarer Kartentest</title>
+  <meta name="theme-color" content="#17383f" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="res/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="res/icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="res/style.css" />
+  <link rel="stylesheet" href="res/kartentest.css" />
+  <script defer src="res/aufgaben-dschungel.js"></script>
+  <script defer src="res/aufgaben-unterwasser.js"></script>
+  <script defer src="res/aufgaben-weltraum.js"></script>
+  <script defer src="res/karte-dschungel.js"></script>
+  <script defer src="res/karte-unterwasser.js"></script>
+  <script defer src="res/karte-weltraum.js"></script>
+  <script defer src="res/karte.js"></script>
+  <script defer src="res/kartentest.js"></script>
+  <script defer src="res/pwa.js"></script>
+</head>
+<body class="kartentest-page">
+  <main class="kartentest-layout">
+    <section class="kartentest-controls" aria-labelledby="test-title">
+      <p class="test-eyebrow">SCHATZINSEL · V3</p>
+      <h1 id="test-title">Kartentest</h1>
+      <p class="test-intro">Alle drei Karten direkt spielen: Truhe antippen, Aufgabe lösen und Sterne sammeln. Der Test speichert keinen Spielstand und verändert das Hauptspiel nicht.</p>
+
+      <fieldset>
+        <legend>1 · Themenwelt</legend>
+        <div class="test-themes" role="group" aria-label="Themenwelt">
+          <button type="button" class="test-theme active" data-theme="dschungel" aria-pressed="true">🐒 Dschungel</button>
+          <button type="button" class="test-theme" data-theme="unterwasser" aria-pressed="false">🐠 Unterwasser</button>
+          <button type="button" class="test-theme" data-theme="weltraum" aria-pressed="false">🚀 Weltraum</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2 · Altersgruppe</legend>
+        <label for="testAge">Alter</label>
+        <select id="testAge">
+          <option value="klein">2–3 Jahre</option>
+          <option value="mittel">3–4 Jahre</option>
+          <option value="gross">4–5 Jahre</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <legend>3 · Fortschritt spielen oder simulieren</legend>
+        <label for="testProgress">Abgeschlossene Stationen: <strong id="testProgressLabel">0 / 12</strong></label>
+        <input id="testProgress" type="range" min="0" max="12" step="1" value="0" />
+        <div class="test-steps"><span>Start</span><span>Finale</span></div>
+        <label for="testTeam">Teamsterne</label>
+        <input id="testTeam" type="number" min="0" max="12" step="1" value="0" />
+        <div class="test-actions">
+          <button id="testOpenChest" type="button" class="test-play-now">🗝️ Aktuelle Truhe öffnen</button>
+          <button id="testPrev" type="button">− Station</button>
+          <button id="testNext" type="button">+ Station</button>
+          <button id="testReset" type="button">Zurücksetzen</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>4 · Darstellung</legend>
+        <label class="test-check"><input id="testChests" type="checkbox" checked /> Schatztruhen anzeigen</label>
+        <label class="test-check"><input id="testGrid" type="checkbox" /> Koordinatenraster anzeigen</label>
+        <button id="testRedraw" type="button" class="test-redraw">Karte neu zeichnen</button>
+      </fieldset>
+      <div id="testStatus" class="test-status" role="status" aria-live="polite">Dschungelkarte geladen · Station 1 von 12</div>
+      <p class="test-footer"><a href="index.html">← Zurück zum Spiel</a> · Wechsel von Themenwelt oder Altersgruppe startet eine neue Testrunde.</p>
+    </section>
+
+    <section class="kartentest-preview" aria-label="Kartenvorschau">
+      <div class="test-preview-top"><span>SPIELBARE KARTE</span><strong id="testPreviewName">Dschungel</strong></div>
+      <div id="app">
+        <div class="screen active" id="screen-map">
+          <div class="map-header">
+            <div class="pill reise-pill" id="reisePill">🐒 Dschungel</div>
+            <div class="pill">⭐ <span id="starCount">0</span>/12</div>
+            <div class="pill">🤝⭐ <span id="teamCount">0</span></div>
+          </div>
+          <div class="map-wrap">
+            <div class="pergament">
+              <div class="pergament-inner" id="pergamentInner">
+                <svg class="map-svg" id="mapSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+                <svg class="test-grid-layer" id="testGridLayer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+              </div>
+              <div id="truhenLayer"></div>
+            </div>
+          </div>
+        </div>
+        <div id="testPlayLayer" class="test-play-layer" hidden>
+          <section class="test-play-card" role="dialog" aria-modal="true" aria-labelledby="testPlayTitle" tabindex="-1">
+            <div class="test-play-top">
+              <span id="testPlayMeta">Station 1 von 12</span>
+              <button id="testPlayClose" type="button" aria-label="Zur Karte zurückkehren">✕</button>
+            </div>
+            <div id="testTaskView">
+              <div id="testPlayIcon" class="test-play-icon" aria-hidden="true">🔎</div>
+              <h2 id="testPlayTitle">Aufgabe</h2>
+              <p id="testPlayText" class="test-play-text"></p>
+              <div id="testPlayHint" class="test-play-hint" hidden></div>
+              <div class="test-play-actions">
+                <button id="testPlaySpeak" type="button">🔊 Vorlesen</button>
+                <button id="testPlayShowHint" type="button">💡 Tipp / Lösung</button>
+                <button id="testPlayAgain" type="button">🔁 Andere Aufgabe</button>
+                <button id="testPlayComplete" type="button" class="test-play-success">✅ Geschafft</button>
+              </div>
+            </div>
+            <div id="testRewardView" class="test-play-result" hidden>
+              <div class="test-play-icon" aria-hidden="true">⭐</div>
+              <h2 id="testRewardTitle">Geschafft!</h2>
+              <p id="testRewardText"></p>
+              <button id="testRewardContinue" type="button" class="test-play-success">➡️ Weiter</button>
+            </div>
+            <div id="testFinalView" class="test-play-result" hidden>
+              <div id="testFinalIcon" class="test-play-icon" aria-hidden="true">💎</div>
+              <h2 id="testFinalTitle">Schatz gefunden!</h2>
+              <p id="testFinalText"></p>
+              <div class="test-play-actions">
+                <button id="testFinalRestart" type="button">🔄 Noch einmal spielen</button>
+                <button id="testFinalNext" type="button" class="test-play-success">➡️ Nächste Themenwelt</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <p class="test-preview-note">Die leuchtende Truhe ist anklickbar. Für jede Runde werden echte Aufgaben der gewählten Altersgruppe geladen. Mit dem Schieberegler lassen sich weiterhin beliebige Spielstände simulieren.</p>
+    </section>
+  </main>
+  <div id="errorBox"></div>
+</body>
+</html>
